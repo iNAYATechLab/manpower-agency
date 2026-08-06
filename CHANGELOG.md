@@ -3,49 +3,55 @@ All notable changes to `manpower-agency-saas` follow **International Version Con
 
 Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/BN
 
-## [v1.7.0] - 2026-08-07
-### Phase 8 (Steps 171-190) - Client & Contact Management
-**Build:** `20260807-c6ee6bb` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 171-190 (20 steps)
+## [v1.8.0] - 2026-08-07
+### Phase 9 (Steps 191-210) - Timesheet & Overtime Automation
+**Build:** `20260807-d091f2c` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 191-210 (20 steps)
 
 #### Added
-- **171:** Foreign Client Company Onboarding Form (`app/agency/clients/onboarding/page.tsx` - multi-section)
-- **172:** Company Profile & Registered Name Input (`components/clients/onboarding/company-profile.tsx`)
-- **173:** Contact Person & Official Contact Form (`contact-form.tsx` - HR Manager)
-- **174:** Multiple Job Sites UI (`job-sites-form.tsx` - add/remove sites)
-- **175:** Site Location & GPS Coordinates (latitude/longitude for Geofencing)
-- **176:** Contract Agreement Uploader (PDF file)
-- **177:** Contract Start/End Calendar UI (date pickers)
-- **178:** Client Billing Rate Setup (`components/clients/billing-rates.tsx` - $/hr)
-- **179:** Worker Pay Rate Configuration ( $/hr)
-- **180:** Automated Profit Margin Counter (`calcProfitMargin` — `billing - pay` auto)
-- **181:** Job Demand Quota Onboarding (`job-demand-form.tsx` - quantity, progress bar)
-- **182:** Real-time Progress Bar (filled/quantity %, Fill +1 button)
-- **183:** Drag-and-Drop Deployment Assignment (`drag-drop-deployment.tsx` - bench ↔ site, checkbox simulated)
-- **184:** Bulk Worker Site Assignment (Bulk Assign All button)
-- **185:** Site Transfer & Release Process (Release ← button, transferFromId)
-- **186:** Client Company List Data Table (`components/clients/client-table.tsx` - 3 clients, Code, Country, Rating)
-- **187:** Client Details View (`app/agency/clients/[id]/page.tsx` - profile, contract, workers)
-- **188:** Client-wise Active Workers Tab (Deployed workers table)
-- **189:** Contract Expiry Alert Card (`contract-expiry-card.tsx` - <90 days, high/medium urgency)
-- **190:** Client Feedback & Rating System (`feedback-system.tsx` - 5★, comment, submit)
+- **191:** Daily Shift Time Table UI (`components/timesheet/daily-shift-table.tsx` - Morning/Evening/Night, break, night allowance)
+- **192:** Weekly Roster Calendar View (`weekly-roster.tsx` - 7 days x workers, M/—)
+- **193:** Hourly Timesheet Input Grid Table (`hourly-grid.tsx` - 5 days x 3 workers, inputs, total)
+- **194:** Worker-based Time Entry Interface (`worker-entry.tsx` - regular/OT + night/hazard + calculateOTPay)
+- **195:** Bulk Timesheet Entry Grid for Supervisors (`bulk-entry.tsx` - Fill All 8h, 5 workers)
+- **196:** Regular vs Overtime Separate Fields (`ot-fields.tsx` - distinct inputs)
+- **197:** 1.5x & 2.0x Overtime Multiplier Backend (`lib/timesheet/calculations.ts` - first 2h 1.5x, beyond 2.0x)
+- **198:** Night Shift Allowance Logic ( +$5 if isNightShift)
+- **199:** Hazard Pay Dynamic Field ( +$10 if isHazard)
+- **200:** GPS Clocking Validation Logic (`lib/timesheet/validation.ts` - validateClocking)
+- **201:** Geofencing Radius Check Algorithm (Haversine, 100m)
+- **202:** Holiday Rate Override Policy (2.0x for all hours, PUBLIC_HOLIDAYS_2026)
+- **203:** Timesheet Editing History & Tracking Handler (`lib/timesheet/history.ts` + `history-view.tsx`)
+- **204:** Dispute Flagging System (`lib/timesheet/dispute.ts` + `dispute-system.tsx` - open/resolved)
+- **205:** Timesheet Submission Workflow (`lib/timesheet/workflow.ts` - draft → submitted)
+- **206:** Client Portal Pending Timesheets List (`components/timesheet/client-pending.tsx` - 2 pending)
+- **207:** Client Approve All Bulk Action UI (`bulk-approve.tsx` - DigitalSignature + approve)
+- **208:** Rejection with Comment Flow (`rejection-flow.tsx` - comment, rejected)
+- **209:** Canvas Digital Signature Component (`digital-signature.tsx` - 400x150 canvas, save)
+- **210:** Locked Status Logic (approved → locked, isLocked, Read-Only, no edits)
 
 #### Routes
-- `/agency/clients` — Client List + Expiry Alerts
-- `/agency/clients/onboarding` — Foreign Client Onboarding (Company, Contacts, Sites, Contract, Billing/Pay, Demand, Deployment)
-- `/agency/clients/[id]` — Client Details + Active Workers + Feedback
+- `/agency/timesheets` — Overview (Daily, Weekly, Hourly, Bulk, OT, GPS, Holiday)
+- `/agency/timesheets/[id]` — Details (Worker Entry, History, Dispute, Workflow, Signature)
+- `/client/timesheets` — Client Portal (Pending, Bulk Approve, Rejection)
 
 #### Verified
-- `npm run build` ✓ 21 routes (3 client routes + 19 previous + middleware)
+- `npm run build` ✓ 23 routes (3 timesheet routes + 21 previous + middleware 28.6 kB)
 - Gift: https://github.com/iNAYATechLab/manpower-agency
+
+---
+
+## [v1.7.0] - 2026-08-07
+### Phase 8 (Steps 171-190) - Client & Contact Management
+**Build:** `20260807-d091f2c` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 171-190 (20 steps)
+
+#### Added
+- **171-190:** Foreign Client Onboarding (Company, Registered Name, Contact, Job Sites, GPS, Contract Upload, Calendar, Billing/Pay, Profit Margin, Demand Quota, Progress Bar, Drag-Drop Deployment, Bulk Assignment, Site Transfer, Client List, Details View, Active Workers Tab, Contract Expiry Alert, Feedback & Rating)
 
 ---
 
 ## [v1.6.0] - 2026-08-07
 ### Phase 7 (Steps 151-170) - Worker Onboarding & Skill Directory
 **Build:** `20260807-c6ee6bb` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 151-170 (20 steps)
-
-#### Added
-- **151-170:** Multi-step Form (10 steps), Personal, Passport, Medical, Skill Catalog, Grade A/B/C, Language, Bank, Emergency, Photo, Certificate, Data Table, Column Sort, Filters, Print/PDF, Profile View, Performance History, Complaint, Blacklist
 
 ---
 
@@ -86,8 +92,8 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ---
 
 ## Unreleased
-### [v1.8.0] - Phase 9 (Steps 191-210) - Planned
-- Timesheet, Overtime & Geofencing
+### [v1.9.0] - Phase 10 (Steps 211-230) - Planned
+- Payroll & Salary Generation
 
 ---
 

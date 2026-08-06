@@ -2,16 +2,16 @@
   "system": "International Version Control System (IVCS)",
   "standard": "Semantic Versioning 2.0.0 - https://semver.org/",
   "format": "vMAJOR.MINOR.PATCH+BUILD",
-  "current": "v1.7.0",
-  "phase": "Phase 8 (Steps 171-190)",
-  "build": "20260807-c6ee6bb",
+  "current": "v1.8.0",
+  "phase": "Phase 9 (Steps 191-210)",
+  "build": "20260807-d091f2c",
   "description": "iNAYATechLab Manpower SaaS - IVCS: International, Auditable, Phase-Mapped Versioning",
   "rules": {
     "major": "Breaking architecture change (1=Foundation 1-5, 2=Core Features 6-10, 3=Advanced 11-15)",
     "minor": "Phase completion - each phase (20 steps) increments MINOR (1.0.0 -> 1.1.0 -> ... -> 3.0.0)",
     "patch": "Hotfix / single step fix within phase (1.0.0 -> 1.0.1)",
     "build": "YYYYMMDD-shortHash (e.g., 20260807-736b6e7) for international traceability",
-    "tag": "v prefix mandatory (v1.7.0), annotated tag with message",
+    "tag": "v prefix mandatory (v1.8.0), annotated tag with message",
     "branch": "main (stable), develop (next), gift/* (delivery)"
   },
   "history": [
@@ -68,14 +68,21 @@
       "version": "v1.7.0",
       "phase": "Phase 8 (Steps 171-190)",
       "date": "2026-08-07",
-      "commit": "pending",
+      "commit": "d091f2c",
       "changes": "Client & Contact Management: Foreign client onboarding (171), company profile (172), contact person (173), job sites (174), GPS (175), contract upload (176), calendar (177), billing rate (178), pay rate (179), profit margin (180), demand quota (181), progress bar (182), drag-drop deployment (183), bulk assignment (184), site transfer (185), client list table (186), details view (187), active workers tab (188), contract expiry alert (189), feedback & rating (190)"
+    },
+    {
+      "version": "v1.8.0",
+      "phase": "Phase 9 (Steps 191-210)",
+      "date": "2026-08-07",
+      "commit": "pending",
+      "changes": "Timesheet & Overtime Automation: Daily shift table (191), weekly roster (192), hourly grid (193), worker entry (194), bulk entry (195), OT fields (196), 1.5x/2.0x multiplier (197), night allowance (198), hazard pay (199), GPS validation (200), geofencing radius (201), holiday override (202), edit history (203), dispute system (204), submission workflow (205), client pending list (206), bulk approve (207), rejection flow (208), digital signature (209), locked status (210)"
     }
   ],
   "next": {
-    "version": "v1.8.0",
-    "phase": "Phase 9 (Steps 191-210)",
-    "planned": "Timesheet & Shift Management"
+    "version": "v1.9.0",
+    "phase": "Phase 10 (Steps 211-230)",
+    "planned": "Payroll & Salary Generation"
   },
   "international": {
     "locales": [
