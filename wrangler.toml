@@ -1,0 +1,6 @@
+# Cloudflare Pages - No wrangler needed for Pages, just for reference
+name = "manpower-agency"
+type = "javascript"
+compatibility_date = "2024-08-07"
+[env.production]
+# Pages handles Next.js via @cloudflare/next-on-pages
