@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+  iNAYATechLab Design System
+  Step 14: Tailwind CSS & CSS Variables
+  Step 18: Primary Color Theme & Branding Palette
+*/
+
+@layer base {
+  :root {
+    /* Brand Colors mapped to HSL for shadcn */
+    /* s1 Dark Purple #1D0B2E - Primary Background */
+    --background: 270 58% 11%;
+    /* s4 Pure White #FFFFFF - Primary Text */
+    --foreground: 0 0% 100%;
+
+    --card: 270 58% 11%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 270 58% 11%;
+    --popover-foreground: 0 0% 100%;
+
+    /* s2 Gold #E5B84B - Highlights & Buttons */
+    --primary: 42 74% 60%;
+    --primary-foreground: 270 58% 11%;
+
+    /* s3 Dark Plum #2A1143 - Secondary Background */
+    --secondary: 272 60% 16%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 272 60% 16%;
+    --muted-foreground: 270 15% 70%;
+
+    /* s5 Light Lavender #B388FF - Accents & Icons */
+    --accent: 263 100% 76%;
+    --accent-foreground: 270 58% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 272 40% 22%;
+    --input: 272 40% 22%;
+    --ring: 263 100% 76%;
+
+    --radius: 0.75rem;
+
+    --chart-1: 42 74% 60%; /* Gold */
+    --chart-2: 263 100% 76%; /* Lavender */
+    --chart-3: 270 58% 11%; /* Dark Purple */
+    --chart-4: 272 60% 16%; /* Dark Plum */
+    --chart-5: 0 0% 100%; /* White */
+  }
+
+  .dark {
+    --background: 270 58% 11%;
+    --foreground: 0 0% 100%;
+    --card: 272 60% 16%;
+    --card-foreground: 0 0% 100%;
+    --popover: 272 60% 16%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 42 74% 60%;
+    --primary-foreground: 270 58% 11%;
+    --secondary: 272 60% 16%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 272 40% 18%;
+    --muted-foreground: 270 12% 65%;
+    --accent: 263 100% 76%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 272 35% 20%;
+    --input: 272 35% 20%;
+    --ring: 263 100% 76%;
+    --chart-1: 42 74% 60%;
+    --chart-2: 263 100% 76%;
+    --chart-3: 272 60% 16%;
+    --chart-4: 270 58% 11%;
+    --chart-5: 0 0% 85%;
+  }
+
+  /* Light mode still uses dark brand - SaaS is dark-first */
+  .light {
+    --background: 0 0% 100%;
+    --foreground: 270 58% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 270 58% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 270 58% 11%;
+    --primary: 270 58% 11%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 20% 96%;
+    --secondary-foreground: 270 58% 11%;
+    --muted: 270 20% 96%;
+    --muted-foreground: 270 10% 45%;
+    --accent: 263 100% 76%;
+    --accent-foreground: 0 0% 100%;
+    --border: 270 15% 90%;
+    --input: 270 15% 90%;
+    --ring: 270 58% 11%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom scrollbar - brand themed */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1d0b2e;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a1143;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b388ff;
+}
