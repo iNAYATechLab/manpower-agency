@@ -2,16 +2,16 @@
   "system": "International Version Control System (IVCS)",
   "standard": "Semantic Versioning 2.0.0 - https://semver.org/",
   "format": "vMAJOR.MINOR.PATCH+BUILD",
-  "current": "v1.2.0",
-  "phase": "Phase 3 (Steps 41-70)",
-  "build": "20260807-3f777a7",
+  "current": "v1.3.0",
+  "phase": "Phase 4 (Steps 71-100)",
+  "build": "20260807-736b6e7",
   "description": "iNAYATechLab Manpower SaaS - IVCS: International, Auditable, Phase-Mapped Versioning",
   "rules": {
     "major": "Breaking architecture change (1=Foundation 1-5, 2=Core Features 6-10, 3=Advanced 11-15)",
     "minor": "Phase completion - each phase (20 steps) increments MINOR (1.0.0 -> 1.1.0 -> ... -> 3.0.0)",
     "patch": "Hotfix / single step fix within phase (1.0.0 -> 1.0.1)",
-    "build": "YYYYMMDD-shortHash (e.g., 20260807-3f777a7) for international traceability",
-    "tag": "v prefix mandatory (v1.2.0), annotated tag with message",
+    "build": "YYYYMMDD-shortHash (e.g., 20260807-736b6e7) for international traceability",
+    "tag": "v prefix mandatory (v1.3.0), annotated tag with message",
     "branch": "main (stable), develop (next), gift/* (delivery)"
   },
   "history": [
@@ -33,14 +33,21 @@
       "version": "v1.2.0",
       "phase": "Phase 3 (Steps 41-70)",
       "date": "2026-08-07",
+      "commit": "736b6e7",
+      "changes": "Multi-Tenant DB Schema: 30 tables + Prisma RLS (agencies, agency_settings, roles, permissions, users, user_profiles, departments, designations, skills, skill_categories, workers, worker_contacts, worker_documents, worker_skills, clients, client_contacts, job_sites, contracts, job_demands, worker_deployments, shift_schedules, timesheets, timesheet_entries, overtimes, payrolls, payroll_details, invoices, invoice_items, audit_logs, system_notifications)"
+    },
+    {
+      "version": "v1.3.0",
+      "phase": "Phase 4 (Steps 71-100)",
+      "date": "2026-08-07",
       "commit": "pending",
-      "changes": "Multi-Tenant DB Schema: 30 tables (agencies, agency_settings, roles, permissions, users, user_profiles, departments, designations, skills, skill_categories, workers, worker_contacts, worker_documents, worker_skills, clients, client_contacts, job_sites, contracts, job_demands, worker_deployments, shift_schedules, timesheets, timesheet_entries, overtimes, payrolls, payroll_details, invoices, invoice_items, audit_logs, system_notifications) + Prisma RLS"
+      "changes": "Security, RLS & Data Isolation: RLS activate, 12 RLS policies (agencies, users, CEO bypass, workers, clients, contracts, job_sites, timesheets, payrolls, invoices, compliance), FK indexes, unique indexes, passport duplicate check, PK cascade, migration script, Supabase migrate, seed data (test agency + 5 workers), performance test, slow-query indexes, storage buckets (private/public/temp), security policies, encryption upload, image compression, watermark, signed URL, backup automation tune"
     }
   ],
   "next": {
-    "version": "v1.3.0",
-    "phase": "Phase 4 (Steps 71-90)",
-    "planned": "Worker Onboarding & Skill Management UI"
+    "version": "v1.4.0",
+    "phase": "Phase 5 (Steps 101-130)",
+    "planned": "Worker Onboarding UI & Skill Management"
   },
   "international": {
     "locales": ["bn", "en", "ar"],

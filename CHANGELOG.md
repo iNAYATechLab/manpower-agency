@@ -3,56 +3,65 @@ All notable changes to `manpower-agency-saas` follow **International Version Con
 
 Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/BN
 
-## [v1.2.0] - 2026-08-07
-### Phase 3 (Steps 41-70) - Multi-Tenant Database Schema & Relations
-**Build:** `20260807-3f777a7` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 41-70 (30 tables)
+## [v1.3.0] - 2026-08-07
+### Phase 4 (Steps 71-100) - Security, RLS & Data Isolation
+**Build:** `20260807-736b6e7` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 71-100 (30 steps)
 
 #### Added
-- **Step 41:** PostgreSQL Multi-Tenant Schema (`prisma/schema.prisma`) - PostgreSQL provider, RLS ready, `agencyId` tenant isolation, 30 tables
-- **Step 42:** `agencies` - Agency company data (slug, logo, country, isActive) + relations to all tenant tables
-- **Step 43:** `agency_settings` - Branding, billing, geofencing, payroll, compliance per agency
-- **Step 44:** `roles` + `permissions` + `role_permissions` M2M - 5 system roles, RBAC matrix
-- **Step 45:** `users` - Unified user directory (agencyId nullable for super_admin, CEO non-deletable, RLS indexed)
-- **Step 46:** `user_profiles` - Extended bio, DOB, nationality, emergency contact
-- **Step 47:** `departments` - Per-agency departments (unique agencyId+name)
-- **Step 48:** `designations` - Titles (Welder, Electrician) per agency, linked to department
-- **Step 49:** `skills` - Global skills catalog
-- **Step 50:** `skill_categories` - Categories (Construction, Electrical)
-- **Step 51:** `workers` - Main worker table (30+ fields: passport, akama, workPermit, grade A/B/C, blacklist, geofence, RLS)
-- **Step 52:** `worker_contacts` - Emergency contacts per worker
-- **Step 53:** `worker_documents` - Encrypted docs, expiry, watermark, verification
-- **Step 54:** `worker_skills` M2M - Worker ↔ Skill with grade/years/certified
-- **Step 55:** `clients` - Foreign employers (per agency, country, active)
-- **Step 56:** `client_contacts` - HR/Project contacts per client
-- **Step 57:** `job_sites` - Project sites (geofence lat/lng, radius, per client)
-- **Step 58:** `contracts` - Business contracts (number, value, currency, status)
-- **Step 59:** `job_demands` - Worker demands (quantity, billing/pay rate, profit auto, grade)
-- **Step 60:** `worker_deployments` - Deployments (drag-and-drop, transfer, billing/pay)
-- **Step 61:** `shift_schedules` - Shifts (Morning/Evening/Night, break, hazard)
-- **Step 62:** `timesheets` - Weekly timesheets (status, locked, client signature)
-- **Step 63:** `timesheet_entries` - Daily entries (regular/OT/night, GPS, geofenced)
-- **Step 64:** `overtimes` - OT records (multiplier 1.5x/2.0x, hazard)
-- **Step 65:** `payrolls` - Payroll runs (gross/deductions/net, bank file)
-- **Step 66:** `payroll_details` - Per-worker payroll (hours, gross, net, payslip)
-- **Step 67:** `invoices` - Client invoices (multi-currency, Stripe, status)
-- **Step 68:** `invoice_items` - Invoice lines (hours * rate)
-- **Step 69:** `audit_logs` - Comprehensive audit (agencyId nullable, action, resource)
-- **Step 70:** `system_notifications` - Notifications (broadcast, priority, expiry)
-- **Prisma Client:** `lib/db/prisma.ts` singleton + `setAgencyContext` / `withAgencyContext` RLS helpers
-- **RLS Helper:** `lib/db/rls.ts` - Policies for 14 tenant tables, `agency_isolation` + `super_admin_bypass`
-- **Build:** `npm run build` ✓ 9 routes · Prisma Client v5.14.0 generated · `npx prisma validate` ✓
+- **Step 71:** RLS Activate (`lib/db/rls-activate.sql`) - Enable RLS on 17 tenant tables + `is_ceo_bypass()` function
+- **Step 72:** `agencies` RLS (`agencies_isolation` + `ceo_bypass` policies)
+- **Step 73:** `users` RLS (agencyId isolation, CEO sees all including agencyId NULL)
+- **Step 74:** CEO Bypass Override Logic (`is_ceo_bypass()` — empty `app.current_agency_id` = unrestricted)
+- **Step 75:** `workers` Tenant Isolation (agencyId = current_setting)
+- **Step 76:** `clients` RLS
+- **Step 77:** `contracts` Security Policy
+- **Step 78:** `job_sites` Data Isolation
+- **Step 79:** `timesheets` RLS
+- **Step 80:** `payrolls` Safety Rules (isolation + write safety for agency_admin/CEO)
+- **Step 81:** `invoices` Security Policy
+- **Step 82:** `compliance_documents` RLS (worker_documents via workers join, sensitive docs)
+- **Step 83:** `agency_id` FK Indexes (`lib/db/indexes.sql` - 12 agencyId indexes)
+- **Step 84:** Email/Username Unique Indexes (users, agencies, roles)
+- **Step 85:** Passport/NID Duplicate Indexes (unique where not null, composite agency+passport, expiry indexes)
+- **Step 86:** PK & Cascade Delete (cuid PK, FK `onDelete: Cascade` for agency parent)
+- **Step 87:** Migration Script Compiled (`prisma/migrations/20260807000000_init/migration.sql` - 8 enums, 30 tables)
+- **Step 88:** Supabase/PostgreSQL Migration Ready (`npx prisma migrate deploy` + Supabase SQL Editor compatible)
+- **Step 89:** Seed Data Script (`prisma/seed.ts` - roles, permissions, CEO, agency, skills)
+- **Step 90:** Test Agency & Dummy Workers (Test Agency Co., 5 workers WRK-2026-001..005, NEOM client/site/contract/demand)
+- **Step 91:** Performance Test (`lib/db/performance.ts` - 3 queries, duration, slow threshold 200ms)
+- **Step 92:** Slow-Query Indexes (14 indexes: status, blacklisted, timestamp, country, etc. + pg_stat_statements)
+- **Step 93:** Central Storage Buckets (`lib/storage/config.ts` - private-documents, public-assets, temp-uploads)
+- **Step 94:** Storage Security Policies (private: AES-256, public: open, temp: 24h auto-delete)
+- **Step 95:** Private/Public Permissions (`canAccessBucket`, `isPrivateBucket`)
+- **Step 96:** Encrypted Upload (`lib/storage/upload.ts` - AES-256-CBC encrypt private bucket, mime/size check)
+- **Step 97:** Image Compression (`lib/storage/compression.ts` - resize 1024, quality 80, webp/jpeg)
+- **Step 98:** Watermarking (`lib/storage/watermark.ts` - diagonal 15% opacity, confidential preview URL)
+- **Step 99:** Signed URL (`lib/storage/signed-url.ts` - HMAC SHA256, 1hr expiry, verify)
+- **Step 100:** Backup Automation Tune (`lib/db/backup-automation.ts` - daily 02:00 UTC, retention 30d, health 95% success)
 
-#### Multi-Tenancy
-- All tenant tables have `agencyId` FK → `agencies.id` with `onDelete: Cascade`
-- Super Admin (CEO) `agencyId = null` → Unrestricted, bypass RLS via `RESET app.current_agency_id`
-- Indexes on `agencyId`, `status`, `country`, `expiry` for performance
-- RLS SQL examples in `lib/db/rls.ts` comments
+#### Security
+- 17 Tables RLS Enabled + 12 Policies + CEO Bypass (empty agency_id)
+- 20+ Indexes for RLS performance + Duplicate prevention + Slow-query tracking
+- Storage: 3 Buckets with encryption + watermark + signed URL (HMAC)
+- Backup: Daily automation tuned, 30d retention, success rate tracking
 
 #### Verified
-- `npx prisma generate` ✓ (v5.14.0)
 - `npx prisma validate` ✓
-- `npm run build` ✓ Passed (9 routes)
-- Gift Repo: https://github.com/iNAYATechLab/manpower-agency
+- `npx prisma generate` ✓ v5.14.0
+- `npm run build` ✓ 9 routes
+- Gift: https://github.com/iNAYATechLab/manpower-agency
+
+---
+
+## [v1.2.0] - 2026-08-07
+### Phase 3 (Steps 41-70) - Multi-Tenant Database Schema & Relations
+**Build:** `20260807-736b6e7` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 41-70 (30 tables)
+
+#### Added
+- **41-70:** 30 Tables PostgreSQL multi-tenant (agencies, agency_settings, roles, permissions, users, user_profiles, departments, designations, skills, skill_categories, workers, worker_contacts, worker_documents, worker_skills, clients, client_contacts, job_sites, contracts, job_demands, worker_deployments, shift_schedules, timesheets, timesheet_entries, overtimes, payrolls, payroll_details, invoices, invoice_items, audit_logs, system_notifications) + Prisma RLS helpers
+
+#### Verified
+- `npx prisma validate` ✓ · `npm run build` ✓
 
 ---
 
@@ -61,29 +70,7 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 **Build:** `20260807-3f777a7` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 21-40 (20 steps)
 
 #### Added
-- **Step 21 & 26:** `CEO` username unique Super Admin profile (`lib/ceo.ts`) - Samiullah Pk Founder metadata binding
-- **Step 22:** Super Admin Role Provider (`lib/auth/roles.ts`) - 5 roles hierarchy, RBAC
-- **Step 23:** Non-Deletable DB flag (`lib/db/types.ts`) - `isNonDeletable: true` for CEO
-- **Step 24:** DB Firewall Rules (`lib/db/firewall.ts`) - BLOCK_CEO_DELETE/TRUNCATE/ROLE_DOWNGRADE + SQL triggers
-- **Step 25:** Unrestricted Access (`lib/auth/permissions.ts`) - CEO wildcard `*` permission
-- **Step 27:** Audit Log Backend (`lib/audit/logger.ts`) - CEO activity tracking in `audit_logs`
-- **Step 28:** Super Admin Dashboard (`app/super-admin/layout.tsx` + `page.tsx`) - Distinct route, CEO identity bar, nav
-- **Step 29:** Global Config Panel (`lib/config/global-config.ts` + `app/super-admin/config/page.tsx`) - System-wide config, CEO-only updates
-- **Step 30:** 2FA Security (`lib/auth/2fa.ts`) - TOTP HMAC-SHA1, backup codes, CEO auto-enabled
-- **Step 31:** Master Security Key (`lib/security/master-key.ts`) - 256-bit generation, rotation, hash verification
-- **Step 32:** Recovery Codes (`lib/security/recovery.ts`) - AES-256 encrypted 10 codes, CEO decrypt
-- **Step 33:** Impersonation (`lib/auth/impersonation.ts`) - CEO can view as agency_admin/client, 1hr session
-- **Step 34:** Health Monitoring (`lib/monitoring/health.ts` + `app/super-admin/health/page.tsx`) - 6 services, overall status
-- **Step 35:** CPU/Memory Tracking (`lib/monitoring/system-metrics.ts`) - Node os + process metrics, history, stress check
-- **Step 36:** System Logs (`lib/logs/system-log.ts`) - Centralized LOG_LEVEL, 500 max, filtered query
-- **Step 37:** Broadcast System (`lib/notifications/broadcast.ts`) - CEO broadcast to all/agency/role, priority, expiry
-- **Step 38:** Feature Flags (`lib/features/flags.ts` + `app/super-admin/features/page.tsx`) - 7 flags, CEO toggle, rollout %
-- **Step 39:** License & Subscription (`lib/billing/license.ts`) - 4 plans (starter/growth/enterprise/custom), limits, status
-- **Step 40:** DB Backup (`lib/db/backup.ts` + `app/super-admin/backup/page.tsx`) - CEO trigger, 3s simulate, file + download URL
-
-#### Design
-- Super Admin Routes: `/super-admin`, `/super-admin/config`, `/super-admin/health`, `/super-admin/features`, `/super-admin/backup`
-- Build: 9 routes (5 super-admin) · `npm run build` ✓
+- **21-40:** CEO Non-Deletable, Firewall, Unrestricted, Audit Log, Dashboard, Global Config, 2FA, Master Key, Recovery, Impersonation, Health, CPU/Memory, System Log, Broadcast, Feature Flags, License, Backup
 
 ---
 
@@ -92,19 +79,13 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 **Build:** `20260807-c18d3ee` | **Author:** iNAYATechLab Inc. (Samiullah Pk)
 
 #### Added
-- **GitHub & Security (Steps 1-10):** Private repo `manpower-agency-saas`, AES-256-CBC token encryption, secure envs, branch protection, Arena webhook
-- **Framework (Steps 11-20):** Next.js 14, TypeScript Strict, ESLint+Prettier, Tailwind, Shadcn UI, Branding, Design System, ThemeProvider
-- **Deploy Alternatives:** `vercel.json`, `pages.yml`, `netlify.toml`, `DEPLOY_ALTERNATIVES.md` (Cloudflare Pages, GitHub Pages)
-- Fix: `lib/version.ts` strict TS error resolved for Node 24
-
-#### Verified
-- `npm run build` ✓ Passed · Gift Repo: https://github.com/iNAYATechLab/manpower-agency · Release v1.0.0
+- **1-20:** GitHub, AES-256, Next.js 14, Design System, Gift Automation, IVCS, Deploy Alternatives
 
 ---
 
 ## Unreleased
-### [v1.3.0] - Phase 4 (Steps 71-90) - Planned
-- Smart Worker Onboarding & Document Expiry Alerts
+### [v1.4.0] - Phase 5 (Steps 101-130) - Planned
+- Smart Worker Onboarding UI & Skill Management
 
 ---
 
