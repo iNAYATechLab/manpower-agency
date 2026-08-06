@@ -2,9 +2,9 @@
   "system": "International Version Control System (IVCS)",
   "standard": "Semantic Versioning 2.0.0 - https://semver.org/",
   "format": "vMAJOR.MINOR.PATCH+BUILD",
-  "current": "v1.4.0",
-  "phase": "Phase 5 (Steps 101-130)",
-  "build": "20260807-c3743be",
+  "current": "v1.5.0",
+  "phase": "Phase 6 (Steps 131-150)",
+  "build": "20260807-7681c7e",
   "description": "iNAYATechLab Manpower SaaS - IVCS: International, Auditable, Phase-Mapped Versioning",
   "rules": {
     "major": "Breaking architecture change (1=Foundation 1-5, 2=Core Features 6-10, 3=Advanced 11-15)",
@@ -47,14 +47,21 @@
       "version": "v1.4.0",
       "phase": "Phase 5 (Steps 101-130)",
       "date": "2026-08-07",
-      "commit": "pending",
+      "commit": "7681c7e",
       "changes": "Auth & 2FA: JWT session, signin/signup, Bcrypt, token rotation, RBAC, 5 guards, reset password, 2FA QR/TOTP, SMS OTP, lockout, session timeout, device block, IP block, brute-force, login tracking, secure cookies, CSRF, CORS, rate limiter, verification, OAuth, guest block, audit logger"
+    },
+    {
+      "version": "v1.5.0",
+      "phase": "Phase 6 (Steps 131-150)",
+      "date": "2026-08-07",
+      "commit": "pending",
+      "changes": "Main Dashboard & Navigation UI: Global sidebar, dynamic nav, mobile drawer, header dropdown, notification bell, super admin overview, agency health card, 5 dashboards (agency, client, supervisor, worker), 6 metric cards, search, breadcrumb, skeleton"
     }
   ],
   "next": {
-    "version": "v1.5.0",
-    "phase": "Phase 6 (Steps 131-160)",
-    "planned": "Client & Project Tracking"
+    "version": "v1.6.0",
+    "phase": "Phase 7 (Steps 151-180)",
+    "planned": "Smart Worker Onboarding & Skills"
   },
   "international": {
     "locales": [

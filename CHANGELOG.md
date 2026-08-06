@@ -3,54 +3,49 @@ All notable changes to `manpower-agency-saas` follow **International Version Con
 
 Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/BN
 
-## [v1.4.0] - 2026-08-07
-### Phase 5 (Steps 101-130) - Authentication & 2FA Security
-**Build:** `20260807-c3743be` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 101-130 (30 steps)
+## [v1.5.0] - 2026-08-07
+### Phase 6 (Steps 131-150) - Main Dashboard & Navigation UI
+**Build:** `20260807-7681c7e` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 131-150 (20 steps)
 
 #### Added
-- **101:** Supabase Auth/JWT Session Manager (`lib/auth/session.ts` - HS256, access 1hr + refresh 7d, store, verify)
-- **102:** Sign-In API (`app/api/auth/signin/route.ts` - username/email + password + totp + deviceId, brute-force + lockout + rate limit)
-- **103:** Sign-Up & Agency Onboarding API (`app/api/auth/signup/route.ts` - agency + agency_settings + agency_admin user, verification link)
-- **104:** Password Hashing Bcrypt/Argon2 (`lib/auth/password.ts` - scrypt 64+16, timingSafeEqual, strength check)
-- **105:** Token Rotation & Refresh (`lib/auth/token.ts` + `app/api/auth/refresh/route.ts` - reuse detection, new jti)
-- **106:** RBAC Middleware (`lib/auth/rbac-middleware.ts` - role + permission check, super_admin bypass)
-- **107:** Super Admin Interceptor (`lib/auth/guards/super-admin.ts` - CEO `CEO` + super_admin only)
-- **108:** Agency Admin Guard (`lib/auth/guards/agency-admin.ts` - agency_admin + super_admin, agencyId required)
-- **109:** Client Portal Guard (`lib/auth/guards/client.ts`)
-- **110:** Field Supervisor Security (`lib/auth/guards/supervisor.ts`)
-- **111:** Worker Access Control (`lib/auth/guards/worker.ts` - own data only)
-- **112:** Reset Password Email Dispatcher (`lib/auth/email.ts` - Resend/SendGrid mock, URL)
-- **113:** Password Update & Override API (`app/api/auth/reset-password/route.ts` - request + reset with HMAC token, strength)
-- **114:** 2FA QR Generator (`lib/auth/2fa-qr.ts` - otpauth URL + SVG QR data URI)
-- **115:** 2FA TOTP Validation (`lib/auth/2fa-validation.ts` - re-exports 2fa.ts)
-- **116:** SMS OTP API (`lib/auth/sms-otp.ts` - 6-digit, 5min expiry, 5 attempts)
-- **117:** Account Lockout (`lib/auth/lockout.ts` - 5 attempts /15min → 30min lock)
-- **118:** Session Timeout Interceptor (`lib/auth/session-timeout.ts` - 30min, remainingMs)
-- **119:** Multiple Device Blocking (`lib/auth/device.ts` - max 1 device, allowMultiple flag)
-- **120:** IP Block System (`lib/auth/ip-block.ts` - Set + fail count 10 → block)
-- **121:** Brute-Force Protection (`lib/auth/brute-force.ts` - combines lockout + IP block)
-- **122:** Login Tracking & IP Logging (`lib/auth/login-tracking.ts` - 1000 logs, history, failed)
-- **123:** Secure Cookie Management (`lib/auth/cookies.ts` - httpOnly, secure, sameSite lax, 1hr/7d)
-- **124:** CSRF Validation (`lib/auth/csrf.ts` - HMAC SHA256 token.signature)
-- **125:** CORS Security Headers (`lib/auth/cors.ts` - allowedOrigins, X-Frame, nosniff, Referrer)
-- **126:** API Rate Limiter (`lib/auth/rate-limiter.ts` - token bucket, 5/15min auth, 60/min api)
-- **127:** Onboarding Email Verification (`lib/auth/verification.ts` - HMAC token, 24h, link)
-- **128:** Social OAuth Backend (`lib/auth/oauth.ts` - Google + GitHub, authorizationUrl)
-- **129:** Guest View Block Middleware (`lib/auth/guest-block.ts` - publicRoutes, redirect to /login)
-- **130:** Auth Audit Logger (`lib/auth/audit.ts` - SIGNIN_SUCCESS/FAIL, SIGNUP, LOCKED, BRUTE_FORCE → audit_logs + login tracking)
+- **131:** Global App Sidebar (`components/app-sidebar.tsx` - collapsible, role-aware, #2A1143)
+- **132:** Dynamic Navigation Menu System (`lib/navigation.ts` - NAV_CONFIG 16 items, getNavForRole, hierarchy)
+- **133:** Responsive Mobile Drawer (`components/mobile-drawer.tsx` - hamburger, overlay, 64w)
+- **134:** User Profile Header & Dropdown (`components/header.tsx` - avatar, role badge, ThemeToggle, logout)
+- **135:** Notification Bell & Real-time Pop-up (`components/notification-bell.tsx` - 3 mock, unread badge, dropdown)
+- **136:** Super Admin Overview Dashboard (Enhanced `app/super-admin/page.tsx` - hero, stats, audit, health)
+- **137:** Agency Health Visualization Card (`components/dashboard/agency-health-card.tsx` - CPU/Memory bars)
+- **138:** Agency Main Management Dashboard (`app/agency/page.tsx` + `layout.tsx` - metrics grid, deployments)
+- **139:** Total Active Workers Metric Card (`components/dashboard/metric-card.tsx` - 124, ↑12%)
+- **140:** Deployed Workers Metric Card (87, ↑8%)
+- **141:** Idle/Bench Workers Counter (37)
+- **142:** Active Client Contracts Widget (12)
+- **143:** Pending Timesheets Count (9)
+- **144:** Overdue Invoices Revenue Alert (3 • $12,400, red accent)
+- **145:** Client Dashboard Interface (`app/client/page.tsx` + `layout.tsx` - demands, approvals, invoices)
+- **146:** Field Supervisor Mobile Dashboard (`app/supervisor/page.tsx` + `layout.tsx` - attendance, geofenced, SOS)
+- **147:** Worker Personal Dashboard (`app/worker/page.tsx` + `layout.tsx` - hours, payslip, expiry, SOS)
+- **148:** System Wide Search Bar (`components/ui/search.tsx` - GlobalSearch, mock results)
+- **149:** Breadcrumb Navigation (`components/ui/breadcrumb.tsx` - Home / ... hierarchy)
+- **150:** Skeleton & Spinner (`components/ui/skeleton.tsx` - Skeleton, Spinner, CardSkeleton, pulse)
 
-#### Middleware
-- `middleware.ts` — Central (106-130) — Matches `/super-admin/*`, `/agency/*`, `/client/*`, `/supervisor/*`, `/worker/*`, `/api/*` — Handles CORS, Rate Limit, IP Block, Guest Block, Session Timeout, Brute Force, Role Guards, CSRF
-
-#### APIs
-- `POST /api/auth/signin` — Step 102
-- `POST /api/auth/signup` — Step 103 (Agency Onboarding)
-- `POST /api/auth/refresh` — Step 105 (Token Rotation)
-- `POST /api/auth/reset-password` — Steps 112-113 (Request + Reset)
+#### Layouts & Navigation
+- **Global Layouts:** `/agency`, `/client`, `/supervisor`, `/worker` each with `AppSidebar` + `Header` + `NotificationBell` + `GlobalSearch`
+- **Design System:** Consistent s1 `#1D0B2E`, s2 `#E5B84B`, s3 `#2A1143`, s5 `#B388FF` across all dashboards
+- **Middleware:** Already handles `/agency/*`, `/client/*`, `/supervisor/*`, `/worker/*` guards (106-111)
 
 #### Verified
-- `npm run build` ✓ 13 routes (4 API + 5 super-admin + middleware 28.5 kB)
+- `npm run build` ✓ 17 routes (4 API + 8 dashboards + middleware 28.6 kB)
 - Gift: https://github.com/iNAYATechLab/manpower-agency
+
+---
+
+## [v1.4.0] - 2026-08-07
+### Phase 5 (Steps 101-130) - Authentication & 2FA Security
+**Build:** `20260807-7681c7e` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 101-130 (30 steps)
+
+#### Added
+- **101-130:** JWT Session (HS256), Sign-In/Sign-Up/Refresh/Reset APIs, Bcrypt scrypt, RBAC, 5 Guards, 2FA QR/TOTP, SMS OTP, Lockout, Session Timeout, Device Block, IP Block, Brute-Force, Login Tracking, Secure Cookies, CSRF, CORS, Rate Limiter, Verification, OAuth, Guest Block, Audit Logger + Central Middleware
 
 ---
 
@@ -59,7 +54,7 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 **Build:** `20260807-736b6e7` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 71-100 (30 steps)
 
 #### Added
-- **71-100:** RLS Activate (17 tables), 12 Policies (agencies, users, CEO bypass, workers, clients, contracts, job_sites, timesheets, payrolls, invoices, compliance), FK indexes, unique indexes, passport duplicate, PK cascade, migration, Supabase, seed, performance, slow-query, storage buckets (private/public/temp), encryption, compression, watermark, signed URL, backup tune
+- **71-100:** RLS Activate (17 tables), 12 Policies, Indexes, Migration, Seed, Performance, Storage Buckets, Encryption, Watermark, Signed URL, Backup Tune
 
 ---
 
@@ -91,8 +86,8 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ---
 
 ## Unreleased
-### [v1.5.0] - Phase 6 (Steps 131-160) - Planned
-- Client, Project & Contract Tracking UI
+### [v1.6.0] - Phase 7 (Steps 151-180) - Planned
+- Worker Onboarding & Skill Management UI
 
 ---
 
