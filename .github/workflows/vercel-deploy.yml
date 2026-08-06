@@ -1,0 +1,75 @@
+name: Vercel - Auto Deploy (IVCS)
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to deploy (e.g. v1.0.0)"
+        required: false
+        default: "v1.0.0"
+
+jobs:
+  deploy-vercel:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build Check (IVCS)
+        run: |
+          npm run build
+          echo "✓ Build passed for $GITHUB_REF_NAME"
+
+      # Option 1: Vercel GitHub Integration (Recommended - No Token Needed if connected via Vercel Dashboard)
+      # If repo is connected at https://vercel.com/new → Import from GitHub, Vercel auto-deploys on push.
+      # This job just verifies build; Vercel handles deploy automatically.
+
+      # Option 2: Vercel CLI Deploy (Requires secrets - uncomment when tokens are set)
+      - name: Deploy to Vercel (via CLI)
+        if: env.VERCEL_TOKEN != ''
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npm i -g vercel
+          echo "Deploying to Vercel..."
+          vercel pull --yes --environment=production --token=$VERCEL_TOKEN || true
+          vercel build --prod --token=$VERCEL_TOKEN
+          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --yes
+
+      - name: Deployment Summary
+        run: |
+          echo "### 🚀 Vercel Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Repo:** iNAYATechLab/manpower-agency" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**IVCS:** v1.0.0 → v1.1.0 (Phase 2) auto-deploy on push" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "✅ CLI Deploy: Enabled (token found)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️ CLI Deploy: Skipped (no VERCEL_TOKEN) - Using Vercel GitHub Integration instead" >> $GITHUB_STEP_SUMMARY
+            echo "   Connect at: https://vercel.com/new → Import iNAYATechLab/manpower-agency" >> $GITHUB_STEP_SUMMARY
+            echo "   Auto-deploy will trigger on every git push to main" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Verify Build:** npm run build ✓" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,45 @@
+{
+  "version": 2,
+  "name": "manpower-agency",
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "outputDirectory": ".next",
+  "devCommand": "npm run dev",
+  "regions": ["sin1"],
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
+  "github": {
+    "enabled": true,
+    "autoAlias": true,
+    "autoJobCancelation": true
+  },
+  "env": {
+    "NEXT_PUBLIC_APP_NAME": "iNAYATechLab Manpower SaaS",
+    "NEXT_PUBLIC_COMPANY_NAME": "iNAYATechLab Inc.",
+    "NEXT_PUBLIC_COMPANY_START_DATE": "2026-08-01"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "cleanUrls": true
+}
