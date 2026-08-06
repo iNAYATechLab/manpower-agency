@@ -65,3 +65,11 @@ logs
 **/secrets/
 **/*.key
 **/*.pem
+
+# Additional - Phase 2 fix
+.npm
+.config
+.gift-tmp
+preview
+.next
+.gitconfig
