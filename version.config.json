@@ -2,16 +2,16 @@
   "system": "International Version Control System (IVCS)",
   "standard": "Semantic Versioning 2.0.0 - https://semver.org/",
   "format": "vMAJOR.MINOR.PATCH+BUILD",
-  "current": "v2.1.0",
-  "phase": "Phase 12 (Steps 251-270)",
-  "build": "20260807-1bfa000",
+  "current": "v2.2.0",
+  "phase": "Phase 13 (Steps 271-285)",
+  "build": "20260807-52c08d3",
   "description": "iNAYATechLab Manpower SaaS - IVCS: International, Auditable, Phase-Mapped Versioning",
   "rules": {
     "major": "Breaking architecture change (1=Foundation 1-5, 2=Core Features 6-10, 3=Advanced 11-15)",
     "minor": "Phase completion - each phase (20 steps) increments MINOR (1.0.0 -> 1.1.0 -> ... -> 3.0.0)",
     "patch": "Hotfix / single step fix within phase (1.0.0 -> 1.0.1)",
     "build": "YYYYMMDD-shortHash (e.g., 20260807-736b6e7) for international traceability",
-    "tag": "v prefix mandatory (v2.1.0), annotated tag with message",
+    "tag": "v prefix mandatory (v2.2.0), annotated tag with message",
     "branch": "main (stable), develop (next), gift/* (delivery)"
   },
   "history": [
@@ -96,14 +96,21 @@
       "version": "v2.1.0",
       "phase": "Phase 12 (Steps 251-270)",
       "date": "2026-08-07",
-      "commit": "pending",
+      "commit": "52c08d3",
       "changes": "Analytics, Logger & Export Engine: Profitability chart (251), revenue vs payout (252), utilization donut (253), country map (254), skill distribution (255), overdue chart (256), custom chart binder (257), XLSX exporter (258), CSV exporter (259), PDF report (260), Zod validation (261), form error processor (262), audit log table UI (263), diff viewer (264), IP tracking visual (265), error tracking (266), performance logger (267), report filter (268), weekly summary email (269), client performance report (270)"
+    },
+    {
+      "version": "v2.2.0",
+      "phase": "Phase 13 (Steps 271-285)",
+      "date": "2026-08-07",
+      "commit": "pending",
+      "changes": "Testing, Security Audit & Refactoring: Unit testing env (271), auth API test (272), salary/OT test (273), invoice/VAT test (274), RLS isolation test (275), multi-tenant leak scan (276), RBAC audit (277), super admin non-deletable test (278), penetration scan (279), memory leak refactor (280), query plan optimize (281), bundle size reduction (282), Redis caching (283), image tuning (284), E2E integration test (285)"
     }
   ],
   "next": {
-    "version": "v2.2.0",
-    "phase": "Phase 13 (Steps 271-285)",
-    "planned": "Final Polish & Testing"
+    "version": "v2.3.0",
+    "phase": "Phase 14 (Steps 286-300)",
+    "planned": "Final Deployment & Documentation"
   },
   "international": {
     "locales": [

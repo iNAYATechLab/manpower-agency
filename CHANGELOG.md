@@ -3,47 +3,53 @@ All notable changes to `manpower-agency-saas` follow **International Version Con
 
 Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/BN
 
-## [v2.1.0] - 2026-08-07
-### Phase 12 (Steps 251-270) - Analytics, Logger & Export Engine
-**Build:** `20260807-1bfa000` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 251-270 (20 steps)
+## [v2.2.0] - 2026-08-07
+### Phase 13 (Steps 271-285) - Testing, Security Audit & Refactoring
+**Build:** `20260807-52c08d3` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 271-285 (15 steps)
 
 #### Added
-- **251:** Project Profitability Dashboard Chart (`components/analytics/profitability-chart.tsx` - 3 projects, bars)
-- **252:** Revenue vs Payout Chart Visualization (`revenue-payout-chart.tsx` - 4 months, dual bars)
-- **253:** Worker Utilization Rate Donut Chart (`utilization-donut.tsx` - Active 87 vs Idle 37, conic-gradient)
-- **254:** Country-wise Worker Distribution Map UI (`country-map.tsx` - SA 87, QA 42, AE 15, circles)
-- **255:** Skill Category-wise Manpower Distribution Chart (`skill-distribution.tsx` - 4 skills, bars)
-- **256:** Invoice Overdue Receivable Chart (`overdue-chart.tsx` - Paid 85k, Overdue 12.4k, Pending 42k)
-- **257:** React Custom Chart Component Binder (`lib/analytics/charts.ts` - 6 data generators)
-- **258:** All-Data Excel (XLSX) Exporter Engine (`lib/export/xlsx.ts` - generateXLSXData, downloadXLSX)
-- **259:** All-Data CSV Exporter (`lib/export/csv.ts` - generateCSV, downloadCSV)
-- **260:** PDF Report Printer Engine Setup (`lib/export/pdf.ts` - generatePDFReport HTML, printPDFReport)
-- **261:** Zod Schema Input Validation (`lib/validation/zod-schemas.ts` - validateWorkerOnboarding, Client, Timesheet)
-- **262:** Frontend Form Error Processor (`lib/validation/form-errors.ts` - processFormErrors, hasErrors)
-- **263:** Audit Log Table UI (`components/analytics/audit-log-table.tsx` - 10 logs, time, user, action)
-- **264:** Data Modification History Diff Viewer (`diff-viewer.tsx` - old vs new, yellow highlight)
-- **265:** User IP & Device Tracking Visual (`ip-tracking.tsx` - login history, success/fail)
-- **266:** System Error Tracking & Logger (`lib/logger/error-tracking.ts` - trackError, count)
-- **267:** Performance Metrics Logger (`lib/logger/performance.ts` - logPerformance, avg)
-- **268:** Custom Representative Report Filter (`components/analytics/report-filter.tsx` - agency, date, status)
-- **269:** Auto-Generated Weekly Summary Email (`lib/email/weekly-summary.ts` - subject + HTML table)
-- **270:** Client Performance Report Generator (`lib/reports/client-performance.ts` - 2 mock reports, avgRating, onTimeRate)
-
-#### Routes
-- `/agency/analytics` — Full Analytics Dashboard (251-270) + Export (258-260) + Validation (261-262) + Audit (263-265) + Logger (266-267) + Reports (268-270)
+- **271:** Unit Testing Environment Setup (`vitest.config.ts` - Vitest 1.6.0, globals, coverage v8, alias)
+- **272:** Authentication API Unit Test (`tests/unit/auth.test.ts` - hash/verify, JWT create/verify, 3 tests)
+- **273:** Salary & Overtime Calculation Unit Test (`tests/unit/salary.test.ts` - basic, OT 1.5x/2.0x, night allowance, 4 tests)
+- **274:** Invoice & VAT Calculation Math Test (`tests/unit/invoice.test.ts` - subtotal, VAT 15%, service charge, currency, 4 tests)
+- **275:** RLS Data Isolation Security Test (`tests/unit/rls.test.ts` - CEO delete block, truncate block, agency access, 5 tests)
+- **276:** Multi-Tenant Data Leak Try-Out Scan (`tests/security/multi-tenant-leak.test.ts` - agency filter, super_admin bypass, leak prevention, 3 tests)
+- **277:** Role-Based Permission Access Audit (`tests/security/rbac.test.ts` - agency_admin allow, worker deny, super_admin bypass, 3 tests)
+- **278:** Super Admin Non-Deletable Feature Validation Test (`tests/security/super-admin.test.ts` - CEO non-deletable, firewall, 3 tests)
+- **279:** API Endpoint Penetration Scan (`tests/security/penetration.test.ts` - SQL injection, XSS, rate limit, CSRF, 4 tests)
+- **280:** Unwanted Memory Leak Detect & Code Refactor (`lib/optimization/memory-leak.ts` - heapUsed, leakSuspected, WeakMap refactor)
+- **281:** Database Query Execution Plan Optimize (`lib/optimization/query-plan.ts` - cost, indexUsed, suggestions)
+- **282:** Unused JavaScript Bundle Size Reduction (`next.config.mjs` - optimizePackageImports, modularizeImports lucide-react)
+- **283:** Caching Layer (Redis) Setup (`lib/cache/redis.ts` - redisGet/Set/Del, TTL, stats, ioredis simulated)
+- **284:** Image & Asset Loading Speed Tune (`lib/optimization/image-tuning.ts` - webp/avif, 6 sizes, quality 75, lazyLoad)
+- **285:** End-to-End (E2E) Integration Testing (`tests/e2e/integration.test.ts` - onboarding → timesheet → payroll → invoice, RLS, 2 tests)
 
 #### Verified
-- `npm run build` ✓ 29 routes (1 analytics + 28 previous + middleware 28.7 kB)
+- `npx vitest run` ✓ 9 test files, 31 tests passed (2.27s)
+- `npm run build` ✓ 29 routes (no bundle increase, middleware 28.7 kB)
+- `npx prisma validate` ✓
 - Gift: https://github.com/iNAYATechLab/manpower-agency
+
+#### Optimization
+- Bundle: `optimizePackageImports` for lucide-react + @prisma/client
+- Images: webp/avif, 6 deviceSizes, lazyLoad
+- Cache: Redis simulated with TTL
+- Query: Suggested composite index (agency_id, status), pagination limit 20
+
+---
+
+## [v2.1.0] - 2026-08-07
+### Phase 12 (Steps 251-270) - Analytics, Logger & Export Engine
+**Build:** `20260807-52c08d3` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 251-270 (20 steps)
+
+#### Added
+- **251-270:** Profitability Chart, Revenue vs Payout, Utilization Donut, Country Map, Skill Distribution, Overdue Chart, Custom Chart Binder, XLSX/CSV/PDF Exporters, Zod Validation, Form Error Processor, Audit Log Table UI, Diff Viewer, IP Tracking Visual, Error Tracking, Performance Logger, Report Filter, Weekly Summary Email, Client Performance Report
 
 ---
 
 ## [v2.0.0] - 2026-08-07
 ### Phase 11 (Steps 231-250) - Compliance, Document & Cloud Notification
 **Build:** `20260807-1bfa000` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 231-250 (20 steps)
-
-#### Added
-- **231-250:** Passport Uploader & Validator, Akama Processor, Compliance Tracker, Passport/Work Permit Alerts, Cron 30/60d, Medical Catalog, Insurance Catalog, BMET Tracking, SOS Messaging, Real-time Pusher/Firebase, Resend/SendGrid, Twilio SMS, Notification Center, Email Preferences, Read/Unread Toggle, Queue Processor, Retry Service, Download Permission Checker, Watermarked Preview Viewer
 
 ---
 
@@ -108,8 +114,8 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ---
 
 ## Unreleased
-### [v2.2.0] - Phase 13 (Steps 271-285) - Planned
-- Final Polish, Testing & Deployment
+### [v2.3.0] - Phase 14 (Steps 286-300) - Planned
+- Final Deployment, Documentation & Handover
 
 ---
 
