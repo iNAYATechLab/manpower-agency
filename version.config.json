@@ -2,9 +2,9 @@
   "system": "International Version Control System (IVCS)",
   "standard": "Semantic Versioning 2.0.0 - https://semver.org/",
   "format": "vMAJOR.MINOR.PATCH+BUILD",
-  "current": "v1.3.0",
-  "phase": "Phase 4 (Steps 71-100)",
-  "build": "20260807-736b6e7",
+  "current": "v1.4.0",
+  "phase": "Phase 5 (Steps 101-130)",
+  "build": "20260807-c3743be",
   "description": "iNAYATechLab Manpower SaaS - IVCS: International, Auditable, Phase-Mapped Versioning",
   "rules": {
     "major": "Breaking architecture change (1=Foundation 1-5, 2=Core Features 6-10, 3=Advanced 11-15)",
@@ -40,17 +40,28 @@
       "version": "v1.3.0",
       "phase": "Phase 4 (Steps 71-100)",
       "date": "2026-08-07",
-      "commit": "pending",
+      "commit": "c3743be",
       "changes": "Security, RLS & Data Isolation: RLS activate, 12 RLS policies (agencies, users, CEO bypass, workers, clients, contracts, job_sites, timesheets, payrolls, invoices, compliance), FK indexes, unique indexes, passport duplicate check, PK cascade, migration script, Supabase migrate, seed data (test agency + 5 workers), performance test, slow-query indexes, storage buckets (private/public/temp), security policies, encryption upload, image compression, watermark, signed URL, backup automation tune"
+    },
+    {
+      "version": "v1.4.0",
+      "phase": "Phase 5 (Steps 101-130)",
+      "date": "2026-08-07",
+      "commit": "pending",
+      "changes": "Auth & 2FA: JWT session, signin/signup, Bcrypt, token rotation, RBAC, 5 guards, reset password, 2FA QR/TOTP, SMS OTP, lockout, session timeout, device block, IP block, brute-force, login tracking, secure cookies, CSRF, CORS, rate limiter, verification, OAuth, guest block, audit logger"
     }
   ],
   "next": {
-    "version": "v1.4.0",
-    "phase": "Phase 5 (Steps 101-130)",
-    "planned": "Worker Onboarding UI & Skill Management"
+    "version": "v1.5.0",
+    "phase": "Phase 6 (Steps 131-160)",
+    "planned": "Client & Project Tracking"
   },
   "international": {
-    "locales": ["bn", "en", "ar"],
+    "locales": [
+      "bn",
+      "en",
+      "ar"
+    ],
     "changelog": "CHANGELOG.md follows Keep a Changelog (https://keepachangelog.com/)",
     "dateFormat": "ISO 8601 (YYYY-MM-DD)",
     "author": "iNAYATechLab Inc. (Samiullah Pk)"
