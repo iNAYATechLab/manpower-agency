@@ -3,40 +3,50 @@ All notable changes to `manpower-agency-saas` follow **International Version Con
 
 Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/BN
 
-## [v1.5.0] - 2026-08-07
-### Phase 6 (Steps 131-150) - Main Dashboard & Navigation UI
-**Build:** `20260807-7681c7e` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 131-150 (20 steps)
+## [v1.6.0] - 2026-08-07
+### Phase 7 (Steps 151-170) - Worker Onboarding & Skill Directory
+**Build:** `20260807-53974f9` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 151-170 (20 steps)
 
 #### Added
-- **131:** Global App Sidebar (`components/app-sidebar.tsx` - collapsible, role-aware, #2A1143)
-- **132:** Dynamic Navigation Menu System (`lib/navigation.ts` - NAV_CONFIG 16 items, getNavForRole, hierarchy)
-- **133:** Responsive Mobile Drawer (`components/mobile-drawer.tsx` - hamburger, overlay, 64w)
-- **134:** User Profile Header & Dropdown (`components/header.tsx` - avatar, role badge, ThemeToggle, logout)
-- **135:** Notification Bell & Real-time Pop-up (`components/notification-bell.tsx` - 3 mock, unread badge, dropdown)
-- **136:** Super Admin Overview Dashboard (Enhanced `app/super-admin/page.tsx` - hero, stats, audit, health)
-- **137:** Agency Health Visualization Card (`components/dashboard/agency-health-card.tsx` - CPU/Memory bars)
-- **138:** Agency Main Management Dashboard (`app/agency/page.tsx` + `layout.tsx` - metrics grid, deployments)
-- **139:** Total Active Workers Metric Card (`components/dashboard/metric-card.tsx` - 124, ↑12%)
-- **140:** Deployed Workers Metric Card (87, ↑8%)
-- **141:** Idle/Bench Workers Counter (37)
-- **142:** Active Client Contracts Widget (12)
-- **143:** Pending Timesheets Count (9)
-- **144:** Overdue Invoices Revenue Alert (3 • $12,400, red accent)
-- **145:** Client Dashboard Interface (`app/client/page.tsx` + `layout.tsx` - demands, approvals, invoices)
-- **146:** Field Supervisor Mobile Dashboard (`app/supervisor/page.tsx` + `layout.tsx` - attendance, geofenced, SOS)
-- **147:** Worker Personal Dashboard (`app/worker/page.tsx` + `layout.tsx` - hours, payslip, expiry, SOS)
-- **148:** System Wide Search Bar (`components/ui/search.tsx` - GlobalSearch, mock results)
-- **149:** Breadcrumb Navigation (`components/ui/breadcrumb.tsx` - Home / ... hierarchy)
-- **150:** Skeleton & Spinner (`components/ui/skeleton.tsx` - Skeleton, Spinner, CardSkeleton, pulse)
+- **151:** Multi-step Form (`app/agency/workers/onboarding/page.tsx` - 10 steps, progress bar, state)
+- **152:** Personal Information Input (`components/workers/onboarding/personal-info.tsx` - 6 fields, EN/BN)
+- **153:** Passport Info & Expiry Entry (`passport-form.tsx` - 6 fields, visa)
+- **154:** Health & Medical Fitness Input (`medical-form.tsx` - status, expiry, blood group)
+- **155:** Skill Catalog Selector (`skill-selector.tsx` - 5 skills, checkbox, category)
+- **156:** Professional Grading Dropdown (`grade-dropdown.tsx` - Grade A/B/C)
+- **157:** Language & Experience UI (`language-experience.tsx` - 5 langs, years)
+- **158:** Bank Account & Payment Details (`bank-details.tsx` - bank, IBAN, SWIFT)
+- **159:** Emergency Contact Form (`emergency-contact.tsx` - name, relation, phone, address)
+- **160:** Photo Upload & Cropping UI (`photo-upload.tsx` - preview, file input, remove)
+- **161:** Digitized Skill Certificate Uploader (`certificate-upload.tsx` - title, file, list)
+- **162:** All-Workers Data Table (`components/workers/data-table.tsx` - 5 workers, 6 columns)
+- **163:** Column Customization & Sorting (`data-table.tsx` - visibleCols, sort header)
+- **164:** Skill Filter Dropdown (`filter-dropdown.tsx` - Welder, Electrician etc.)
+- **165:** Location/Project Filter (`filter-dropdown.tsx` - Bench, NEOM Site A)
+- **166:** Print & PDF Download (`print-pdf.tsx` - window.print + /api/workers/[id]/pdf)
+- **167:** Worker Profile Details View (`app/agency/workers/[id]/page.tsx` - avatar, passport, bank, docs)
+- **168:** Performance Rating History Tab (`performance-history.tsx` - 3 reviews, ★ rating)
+- **169:** Complaint Form (`complaint-form.tsx` - reason, details, submit)
+- **170:** Blacklist/Deactivate Button (`blacklist-button.tsx` - reason, toggle, red theme)
 
-#### Layouts & Navigation
-- **Global Layouts:** `/agency`, `/client`, `/supervisor`, `/worker` each with `AppSidebar` + `Header` + `NotificationBell` + `GlobalSearch`
-- **Design System:** Consistent s1 `#1D0B2E`, s2 `#E5B84B`, s3 `#2A1143`, s5 `#B388FF` across all dashboards
-- **Middleware:** Already handles `/agency/*`, `/client/*`, `/supervisor/*`, `/worker/*` guards (106-111)
+
+#### Routes
+- `/agency/workers` — All Workers Table + Filters
+- `/agency/workers/onboarding` — 10-step Multi-step Onboarding
+- `/agency/workers/[id]` — Profile Details + Performance + Complaint + Blacklist
 
 #### Verified
-- `npm run build` ✓ 17 routes (4 API + 8 dashboards + middleware 28.6 kB)
+- `npm run build` ✓ 19 routes (3 worker routes + 17 previous + middleware 28.6 kB)
 - Gift: https://github.com/iNAYATechLab/manpower-agency
+
+---
+
+## [v1.5.0] - 2026-08-07
+### Phase 6 (Steps 131-150) - Main Dashboard & Navigation UI
+**Build:** `20260807-53974f9` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 131-150 (20 steps)
+
+#### Added
+- **131-150:** Global Sidebar, Dynamic Nav (16 items), Mobile Drawer, Header Dropdown, Notification Bell, Super Admin Overview, Agency Health Card, Agency Dashboard, 6 Metric Cards, Client Dashboard, Supervisor Mobile, Worker Personal, Search, Breadcrumb, Skeleton
 
 ---
 
@@ -45,7 +55,7 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 **Build:** `20260807-7681c7e` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 101-130 (30 steps)
 
 #### Added
-- **101-130:** JWT Session (HS256), Sign-In/Sign-Up/Refresh/Reset APIs, Bcrypt scrypt, RBAC, 5 Guards, 2FA QR/TOTP, SMS OTP, Lockout, Session Timeout, Device Block, IP Block, Brute-Force, Login Tracking, Secure Cookies, CSRF, CORS, Rate Limiter, Verification, OAuth, Guest Block, Audit Logger + Central Middleware
+- **101-130:** JWT Session, Sign-In/Sign-Up/Refresh/Reset APIs, Bcrypt scrypt, RBAC, 5 Guards, 2FA QR/TOTP, SMS OTP, Lockout, Session Timeout, Device Block, IP Block, Brute-Force, Login Tracking, Secure Cookies, CSRF, CORS, Rate Limiter, Verification, OAuth, Guest Block, Audit Logger + Central Middleware
 
 ---
 
@@ -62,17 +72,11 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ### Phase 3 (Steps 41-70) - Multi-Tenant Database Schema & Relations
 **Build:** `20260807-736b6e7` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 41-70 (30 tables)
 
-#### Added
-- **41-70:** 30 Tables PostgreSQL multi-tenant + Prisma RLS helpers
-
 ---
 
 ## [v1.1.0] - 2026-08-07
 ### Phase 2 (Steps 21-40) - Super Admin & Company Backbone
 **Build:** `20260807-3f777a7` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 21-40 (20 steps)
-
-#### Added
-- **21-40:** CEO Non-Deletable, Firewall, Dashboard, 2FA, Master Key, etc.
 
 ---
 
@@ -80,14 +84,11 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ### Phase 1 (Steps 1-20) - Foundation
 **Build:** `20260807-c18d3ee` | **Author:** iNAYATechLab Inc. (Samiullah Pk)
 
-#### Added
-- **1-20:** GitHub, AES-256, Next.js 14, Design System, Gift Automation, IVCS
-
 ---
 
 ## Unreleased
-### [v1.6.0] - Phase 7 (Steps 151-180) - Planned
-- Worker Onboarding & Skill Management UI
+### [v1.7.0] - Phase 8 (Steps 171-200) - Planned
+- Client, Project & Contract Tracking + Deployment
 
 ---
 

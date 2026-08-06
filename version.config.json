@@ -2,16 +2,16 @@
   "system": "International Version Control System (IVCS)",
   "standard": "Semantic Versioning 2.0.0 - https://semver.org/",
   "format": "vMAJOR.MINOR.PATCH+BUILD",
-  "current": "v1.5.0",
-  "phase": "Phase 6 (Steps 131-150)",
-  "build": "20260807-7681c7e",
+  "current": "v1.6.0",
+  "phase": "Phase 7 (Steps 151-170)",
+  "build": "20260807-53974f9",
   "description": "iNAYATechLab Manpower SaaS - IVCS: International, Auditable, Phase-Mapped Versioning",
   "rules": {
     "major": "Breaking architecture change (1=Foundation 1-5, 2=Core Features 6-10, 3=Advanced 11-15)",
     "minor": "Phase completion - each phase (20 steps) increments MINOR (1.0.0 -> 1.1.0 -> ... -> 3.0.0)",
     "patch": "Hotfix / single step fix within phase (1.0.0 -> 1.0.1)",
     "build": "YYYYMMDD-shortHash (e.g., 20260807-736b6e7) for international traceability",
-    "tag": "v prefix mandatory (v1.3.0), annotated tag with message",
+    "tag": "v prefix mandatory (v1.6.0), annotated tag with message",
     "branch": "main (stable), develop (next), gift/* (delivery)"
   },
   "history": [
@@ -54,14 +54,21 @@
       "version": "v1.5.0",
       "phase": "Phase 6 (Steps 131-150)",
       "date": "2026-08-07",
-      "commit": "pending",
+      "commit": "53974f9",
       "changes": "Main Dashboard & Navigation UI: Global sidebar, dynamic nav, mobile drawer, header dropdown, notification bell, super admin overview, agency health card, 5 dashboards (agency, client, supervisor, worker), 6 metric cards, search, breadcrumb, skeleton"
+    },
+    {
+      "version": "v1.6.0",
+      "phase": "Phase 7 (Steps 151-170)",
+      "date": "2026-08-07",
+      "commit": "pending",
+      "changes": "Worker Onboarding & Skill Directory: Multi-step form (152-161), data table (162-163), filters (164-165), print/PDF (166), profile view (167), performance history (168), complaint (169), blacklist (170)"
     }
   ],
   "next": {
-    "version": "v1.6.0",
-    "phase": "Phase 7 (Steps 151-180)",
-    "planned": "Smart Worker Onboarding & Skills"
+    "version": "v1.7.0",
+    "phase": "Phase 8 (Steps 171-200)",
+    "planned": "Client & Project Tracking"
   },
   "international": {
     "locales": [
