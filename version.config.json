@@ -2,16 +2,16 @@
   "system": "International Version Control System (IVCS)",
   "standard": "Semantic Versioning 2.0.0 - https://semver.org/",
   "format": "vMAJOR.MINOR.PATCH+BUILD",
-  "current": "v1.9.0",
-  "phase": "Phase 10 (Steps 211-230)",
-  "build": "20260807-2667543",
+  "current": "v2.0.0",
+  "phase": "Phase 11 (Steps 231-250)",
+  "build": "20260807-4d4ed55",
   "description": "iNAYATechLab Manpower SaaS - IVCS: International, Auditable, Phase-Mapped Versioning",
   "rules": {
     "major": "Breaking architecture change (1=Foundation 1-5, 2=Core Features 6-10, 3=Advanced 11-15)",
     "minor": "Phase completion - each phase (20 steps) increments MINOR (1.0.0 -> 1.1.0 -> ... -> 3.0.0)",
     "patch": "Hotfix / single step fix within phase (1.0.0 -> 1.0.1)",
     "build": "YYYYMMDD-shortHash (e.g., 20260807-736b6e7) for international traceability",
-    "tag": "v prefix mandatory (v1.9.0), annotated tag with message",
+    "tag": "v prefix mandatory (v2.0.0), annotated tag with message",
     "branch": "main (stable), develop (next), gift/* (delivery)"
   },
   "history": [
@@ -82,14 +82,21 @@
       "version": "v1.9.0",
       "phase": "Phase 10 (Steps 211-230)",
       "date": "2026-08-07",
-      "commit": "pending",
+      "commit": "4d4ed55",
       "changes": "Payroll & Invoicing: Auto payroll from timesheet (211), basic salary (212), OT calc (213), advance deduction (214), net payable (215), bulk payroll (216), PDF payslip (217), template (218), bank CSV (219), worker portal (220), invoice engine (221), billing hours*rate (222), VAT (223), service charge (224), multi-currency (225), exchange API (226), branded PDF (227), auto-email (228), status tracker (229), Stripe/PayPal (230)"
+    },
+    {
+      "version": "v2.0.0",
+      "phase": "Phase 11 (Steps 231-250)",
+      "date": "2026-08-07",
+      "commit": "pending",
+      "changes": "Compliance, Document & Cloud Notification: Passport uploader (231), akama processor (232), compliance tracker (233), passport alert (234), work permit alert (235), cron scheduler 30/60d (236), medical catalog (237), insurance catalog (238), BMET tracking (239), SOS messaging (240), real-time Pusher/Firebase (241), Resend/SendGrid (242), Twilio SMS (243), notification center (244), email preferences (245), read/unread toggle (246), queue processor (247), retry service (248), download permission checker (249), watermarked preview viewer (250)"
     }
   ],
   "next": {
-    "version": "v2.0.0",
-    "phase": "Phase 11 (Steps 231-260)",
-    "planned": "Compliance & Document Management"
+    "version": "v2.1.0",
+    "phase": "Phase 12 (Steps 251-280)",
+    "planned": "Analytics & Security"
   },
   "international": {
     "locales": [

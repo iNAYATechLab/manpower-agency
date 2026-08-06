@@ -3,49 +3,54 @@ All notable changes to `manpower-agency-saas` follow **International Version Con
 
 Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/BN
 
-## [v1.9.0] - 2026-08-07
-### Phase 10 (Steps 211-230) - Payroll & Client Invoicing
-**Build:** `20260807-2667543` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 211-230 (20 steps)
+## [v2.0.0] - 2026-08-07
+### Phase 11 (Steps 231-250) - Compliance, Document & Cloud Notification
+**Build:** `20260807-4d4ed55` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 231-250 (20 steps)
 
 #### Added
-- **211:** Approved Timesheet → Payroll Engine (`lib/payroll/engine.ts` - generatePayrollFromTimesheet)
-- **212:** Basic Salary Calculator (`lib/payroll/calculator.ts` - regularHours × payRate)
-- **213:** Overtime Pay Calculation (overtimeHours × otRate)
-- **214:** Advance Loan & Deduction Cutting Logic (deductions + advanceCut)
-- **215:** Net Payable Success Logic (gross - totalDeductions)
-- **216:** Bulk Payroll Processing Service (`generateBulkPayroll` + `calculateBulkTotals`)
-- **217:** Individual PDF Pay-slip Generator (`lib/payroll/payslip.ts` - generatePayslipPDF)
-- **218:** Pay-slip Template Design (HTML branded #1D0B2E/#E5B84B, table, net payable)
-- **219:** Bank Disbursement CSV/Excel Generator (`lib/payroll/bank-export.ts` - generateBankCSV)
-- **220:** Worker Portal Pay-slip Download (`app/worker/payslips/page.tsx` - 3 payslips, download)
-- **221:** Client Invoice Generator Engine (`lib/invoicing/engine.ts` - generateInvoice)
-- **222:** Billing Hours × Client Rate Logic (`lib/invoicing/calculations.ts` - subtotal)
-- **223:** VAT/Tax Field (vatPercent 15%)
-- **224:** Service Charge & Commission Calculator (serviceChargePercent 5%)
-- **225:** Multi-Currency Conversion Service (`lib/invoicing/currency.ts` - USD/SAR/BDT/EUR, convertCurrency)
-- **226:** Real-time Exchange Rate API (`fetchRealTimeRate` mock, 100ms, convertWithRealTimeRate)
-- **227:** Branded Professional PDF Invoice Design (`components/invoicing/invoice-pdf.tsx` - #1D0B2E header, table)
-- **228:** Invoice Auto-Email Service (`lib/invoicing/email.ts` - sendInvoiceEmail to hr@neom.com)
-- **229:** Payment Status Tracker (`lib/invoicing/status.ts` - unpaid/paid/partial/overdue, trackInvoiceStatus)
-- **230:** Stripe/PayPal Payment Gateway Backend Link (`lib/invoicing/payment-gateway.ts` - generatePaymentLink)
+- **231:** Passport File Uploader & Validator (`lib/compliance/passport.ts` - PDF/JPG/PNG, 10MB, filename check)
+- **232:** Akama / Work Permit File Processor (`lib/compliance/akama.ts` - daysUntilExpiry)
+- **233:** Smart Compliance Date Tracker Algorithm (`lib/compliance/tracker.ts` - valid/expiring_soon/critical/expired)
+- **234:** Passport Expiry Automated Alert Service (`lib/compliance/alerts.ts` - passport alert)
+- **235:** Work Permit Expiry Automated Alert (work permit alert)
+- **236:** 30 and 60 Days Cron-Job Scheduler (`lib/compliance/cron.ts` - daily 02:00/03:00 UTC)
+- **237:** Medical Report Digital Catalog (`lib/compliance/medical.ts` - fit/unfit/pending, expiry)
+- **238:** Insurance Policy Document Catalog (`lib/compliance/insurance.ts` - policyNumber, coverage)
+- **239:** BMET & Immigration Permit Tracking Module (`lib/compliance/bmet.ts` - pending/approved)
+- **240:** Emergency SOS Messaging Backend (`lib/compliance/sos.ts` - active/acknowledged, triggerSOS)
+- **241:** Pusher/Firebase Real-time Notification System (`lib/notifications/realtime.ts` - subscribe/publish)
+- **242:** Resend/SendGrid Email Dispatcher (`lib/notifications/email-dispatcher.ts` - sendEmail)
+- **243:** Twilio/SMS Gateway API Link (`lib/notifications/sms-gateway.ts` - sendSMS)
+- **244:** System Notification Center Page (`app/agency/notifications/page.tsx` - list, toggle, queue)
+- **245:** User's Email Preference Option (`lib/notifications/preferences.ts` - marketing, complianceAlerts etc.)
+- **246:** Notification Read/Unread Status Toggle (`lib/notifications/read-status.ts` - toggleReadStatus)
+- **247:** Background Queue Processor (`lib/queue/processor.ts` - enqueue, processQueue, 4 job types)
+- **248:** Failed Email Retry Backend Service (`lib/queue/retry.ts` - retryFailedJobs)
+- **249:** Document Download Permission Checker (`lib/storage/permission-checker.ts` - CEO bypass, agency, worker)
+- **250:** Watermarked Document Preview Viewer UI (`components/compliance/watermarked-viewer.tsx` - diagonal confidential, preview)
 
 #### Routes
-- `/agency/payroll` — Payroll Generation (211, 216, 219) + Payslip PDF (217-218) + Bank CSV (219)
-- `/worker/payslips` — Worker Portal (220)
-- `/agency/invoices` — Invoicing (221-230) + Multi-Currency (225-226) + PDF (227) + Email (228) + Status (229) + Stripe/PayPal (230)
+- `/agency/compliance` — Compliance Overview (231-240, 250) + Watermarked Viewer
+- `/agency/notifications` — Notification Center (241-248, 244) + Preferences + Queue
 
 #### Verified
-- `npm run build` ✓ 26 routes (3 payroll/invoice routes + 23 previous + middleware 28.7 kB)
+- `npm run build` ✓ 28 routes (2 new compliance/notification + 26 previous + middleware 28.7 kB)
 - Gift: https://github.com/iNAYATechLab/manpower-agency
+
+---
+
+## [v1.9.0] - 2026-08-07
+### Phase 10 (Steps 211-230) - Payroll & Client Invoicing
+**Build:** `20260807-4d4ed55` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 211-230 (20 steps)
+
+#### Added
+- **211-230:** Auto Payroll Engine, Basic Salary, OT Calc, Advance Deduction, Net Payable, Bulk Payroll, PDF Pay-slip, Template, Bank CSV, Worker Portal, Invoice Engine, Billing Hours×Rate, VAT, Service Charge, Multi-Currency, Exchange API, Branded PDF, Auto-Email, Status Tracker, Stripe/PayPal
 
 ---
 
 ## [v1.8.0] - 2026-08-07
 ### Phase 9 (Steps 191-210) - Timesheet & Overtime Automation
 **Build:** `20260807-2667543` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 191-210 (20 steps)
-
-#### Added
-- **191-210:** Daily Shift Table, Weekly Roster, Hourly Grid, Worker Entry, Bulk Entry, OT Fields, 1.5x/2.0x Multiplier, Night Allowance, Hazard Pay, GPS Validation, Geofencing Radius, Holiday Override, Edit History, Dispute System, Submission Workflow, Client Pending List, Bulk Approve, Rejection Flow, Digital Signature, Locked Status
 
 ---
 
@@ -98,8 +103,8 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ---
 
 ## Unreleased
-### [v2.0.0] - Phase 11 (Steps 231-260) - Planned
-- Compliance, Document Storage & Expiry Alerts
+### [v2.1.0] - Phase 12 (Steps 251-280) - Planned
+- Advanced Analytics & Profitability
 
 ---
 
