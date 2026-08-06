@@ -1,0 +1,959 @@
+// Step 41: PostgreSQL Multi-Tenant Database Schema
+// iNAYATechLab Inc. - Manpower Agency SaaS
+// IVCS v1.2.0 - Phase 3 (Steps 41-70)
+// Multi-Tenancy via agencyId + Row Level Security (RLS) ready
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========== ENUMS ==========
+
+enum RoleType {
+  super_admin
+  agency_admin
+  client
+  field_supervisor
+  worker
+}
+
+enum WorkerStatus {
+  available
+  deployed
+  on_leave
+  blacklisted
+  inactive
+}
+
+enum SkillGrade {
+  A
+  B
+  C
+}
+
+enum ContractStatus {
+  draft
+  active
+  completed
+  terminated
+  expired
+}
+
+enum DeploymentStatus {
+  pending
+  active
+  completed
+  transferred
+  cancelled
+}
+
+enum TimesheetStatus {
+  draft
+  submitted
+  approved
+  locked
+  rejected
+}
+
+enum PayrollStatus {
+  draft
+  calculated
+  approved
+  paid
+  cancelled
+}
+
+enum InvoiceStatus {
+  draft
+  sent
+  paid
+  overdue
+  cancelled
+}
+
+enum AuditAction {
+  CEO_LOGIN
+  CEO_LOGOUT
+  CREATE
+  UPDATE
+  DELETE
+  VIEW
+  APPROVE
+  REJECT
+  BACKUP
+  BROADCAST
+}
+
+enum NotificationType {
+  info
+  warning
+  success
+  error
+  broadcast
+}
+
+// ========== 42. agencies ==========
+
+model Agency {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique // for subdomain: agency-name.manpower.com
+  logoUrl   String?
+  email     String   @unique
+  phone     String?
+  address   String?
+  country   String?  @default("SA")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  settings      AgencySettings?
+  users         User[]
+  departments   Department[]
+  designations  Designation[]
+  workers       Worker[]
+  clients       Client[]
+  jobSites      JobSite[]
+  contracts     Contract[]
+  jobDemands    JobDemand[]
+  deployments   WorkerDeployment[]
+  shifts        ShiftSchedule[]
+  timesheets    Timesheet[]
+  payrolls      Payroll[]
+  invoices      Invoice[]
+  auditLogs     AuditLog[]
+  notifications SystemNotification[]
+
+  @@map("agencies")
+}
+
+// ========== 43. agency_settings ==========
+
+model AgencySettings {
+  id                   String   @id @default(cuid())
+  agencyId             String   @unique
+  agency               Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  // Branding
+  primaryColor         String?  @default("#1D0B2E")
+  secondaryColor       String?  @default("#2A1143")
+  // Billing
+  defaultCurrency      String   @default("USD")
+  supportedCurrencies  String[] @default(["USD", "SAR", "BDT", "EUR"])
+  billingRate          Decimal? @db.Decimal(10, 2)
+  // Geofencing
+  geofencingEnabled    Boolean  @default(true)
+  geofencingRadiusM    Int      @default(100)
+  // Payroll
+  overtimeMultiplier1  Decimal  @default(1.5) @db.Decimal(3, 2)
+  overtimeMultiplier2  Decimal  @default(2.0) @db.Decimal(3, 2)
+  nightAllowance       Decimal? @db.Decimal(10, 2)
+  hazardPay            Decimal? @db.Decimal(10, 2)
+  // Compliance
+  requireMedical       Boolean  @default(true)
+  passportExpiryAlert  Int      @default(60) // days
+
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@map("agency_settings")
+}
+
+// ========== 44. roles and permissions ==========
+
+model Role {
+  id          String       @id @default(cuid())
+  name        RoleType     @unique
+  displayName String
+  description String?
+  isSystem    Boolean      @default(true) // System roles cannot be deleted
+  createdAt   DateTime     @default(now())
+
+  permissions RolePermission[]
+  users       User[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  key         String           @unique // e.g., "workers:read", "payroll:write", "*"
+  name        String
+  description String?
+  category    String? // workers, payroll, etc.
+
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// ========== 45. users (unified directory) ==========
+
+model User {
+  id             String    @id @default(cuid())
+  agencyId       String?   // null for super_admin (global, Step 41 multi-tenant)
+  agency         Agency?   @relation(fields: [agencyId], references: [id])
+
+  username       String    @unique
+  email          String    @unique
+  passwordHash   String
+  fullName       String
+  phone          String?
+  avatarUrl      String?
+
+  roleId         String
+  role           Role      @relation(fields: [roleId], references: [id])
+  roleType       RoleType // denormalized for fast RLS
+
+  isActive       Boolean   @default(true)
+  isSuperAdmin   Boolean   @default(false)
+  isNonDeletable Boolean   @default(false) // Step 23: CEO protection
+  emailVerified  Boolean   @default(false)
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret String?
+
+  // Worker link (if role=worker)
+  workerId       String?   @unique
+  worker         Worker?   @relation(fields: [workerId], references: [id])
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime? // Soft delete
+
+  profile        UserProfile?
+  auditLogs      AuditLog[]
+
+  @@index([agencyId])
+  @@index([roleType])
+  @@index([username])
+  @@map("users")
+}
+
+// ========== 46. user_profiles ==========
+
+model UserProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bio         String?  @db.Text
+  dateOfBirth DateTime?
+  nationality String?
+  address     String?  @db.Text
+  emergencyContact String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("user_profiles")
+}
+
+// ========== 47. departments ==========
+
+model Department {
+  id          String   @id @default(cuid())
+  agencyId    String
+  agency      Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  name        String
+  code        String?  // e.g., "DEPT-001"
+  description String?  @db.Text
+  isActive    Boolean  @default(true)
+
+  designations Designation[]
+  workers      Worker[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([agencyId, name])
+  @@index([agencyId])
+  @@map("departments")
+}
+
+// ========== 48. designations ==========
+
+model Designation {
+  id           String     @id @default(cuid())
+  agencyId     String
+  agency       Agency     @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+
+  title        String // e.g., Welder, Electrician
+  level        String? // Junior, Senior, Lead
+  description  String? @db.Text
+  isActive     Boolean @default(true)
+
+  workers      Worker[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([agencyId, title])
+  @@index([agencyId])
+  @@map("designations")
+}
+
+// ========== 50. skill_categories ==========
+
+model SkillCategory {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g., Construction, Electrical, Mechanical
+  description String?  @db.Text
+  icon        String?
+
+  skills      Skill[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("skill_categories")
+}
+
+// ========== 49. skills ==========
+
+model Skill {
+  id              String        @id @default(cuid())
+  categoryId      String
+  category        SkillCategory @relation(fields: [categoryId], references: [id])
+
+  name            String        @unique // e.g., Welder, Electrician
+  code            String?       @unique
+  description     String?       @db.Text
+  isActive        Boolean       @default(true)
+
+  workers         WorkerSkill[]
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([categoryId])
+  @@map("skills")
+}
+
+// ========== 51. workers (main) ==========
+
+model Worker {
+  id              String       @id @default(cuid())
+  agencyId        String
+  agency          Agency       @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  workerCode      String       @unique // e.g., WRK-2026-001
+  fullName        String
+  fullNameBn      String? // Bengali name
+  dateOfBirth     DateTime?
+  nationality     String?
+  country         String? // Current deployment country
+  phone           String?
+  email           String?      @unique
+  avatarUrl       String?
+
+  passportNumber  String?      @unique
+  passportExpiry  DateTime?
+  akamaNumber     String?
+  akamaExpiry     DateTime?
+  workPermitNumber String?
+  workPermitExpiry DateTime?
+  medicalStatus   String?      // fit, unfit, pending
+  medicalExpiry   DateTime?
+
+  status          WorkerStatus @default(available)
+  grade           SkillGrade?  // A, B, C - Step 52 skill grading
+  experienceYears Int?         @default(0)
+  isBlacklisted   Boolean      @default(false)
+  blacklistReason String?      @db.Text
+  isFlagged       Boolean      @default(false)
+  flagReason      String?
+
+  departmentId    String?
+  department      Department?  @relation(fields: [departmentId], references: [id])
+  designationId   String?
+  designation     Designation? @relation(fields: [designationId], references: [id])
+
+  // Relations
+  user            User?
+  contacts        WorkerContact[]
+  documents       WorkerDocument[]
+  skills          WorkerSkill[]
+  deployments     WorkerDeployment[]
+  timesheetEntries TimesheetEntry[]
+  payrollDetails  PayrollDetail[]
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  deletedAt       DateTime?
+
+  @@index([agencyId])
+  @@index([status])
+  @@index([isBlacklisted])
+  @@index([passportExpiry])
+  @@map("workers")
+}
+
+// ========== 52. worker_contacts ==========
+
+model WorkerContact {
+  id          String   @id @default(cuid())
+  workerId    String
+  worker      Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  name        String // Emergency contact name
+  relation    String? // Father, Brother, etc.
+  phone       String
+  address     String?  @db.Text
+  isPrimary   Boolean  @default(false)
+  isEmergency Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([workerId])
+  @@map("worker_contacts")
+}
+
+// ========== 53. worker_documents ==========
+
+model WorkerDocument {
+  id           String    @id @default(cuid())
+  workerId     String
+  worker       Worker    @relation(fields: [workerId], references: [id], onDelete: Cascade)
+
+  title        String // Passport, Akama, Medical, etc.
+  type         String // passport, akama, medical, biometric, etc.
+  fileUrl      String    // Encrypted cloud storage
+  fileName     String?
+  mimeType     String?
+  fileSize     Int?
+  watermarked  Boolean   @default(false)
+  expiryDate   DateTime?
+  isVerified   Boolean   @default(false)
+  verifiedBy   String?
+  verifiedAt   DateTime?
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([workerId])
+  @@index([type])
+  @@index([expiryDate])
+  @@map("worker_documents")
+}
+
+// ========== 54. worker_skills M2M ==========
+
+model WorkerSkill {
+  workerId    String
+  worker      Worker   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  skillId     String
+  skill       Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  grade       SkillGrade? // Grade for this specific skill
+  years       Int?        // Years of experience in this skill
+  certified   Boolean     @default(false)
+  certifiedAt DateTime?
+
+  @@id([workerId, skillId])
+  @@index([skillId])
+  @@map("worker_skills")
+}
+
+// ========== 55. clients (foreign employers) ==========
+
+model Client {
+  id          String   @id @default(cuid())
+  agencyId    String
+  agency      Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  companyName String
+  companyCode String?  @unique
+  email       String?
+  phone       String?
+  address     String?  @db.Text
+  country     String?  // e.g., SA, AE, QA
+  logoUrl     String?
+  isActive    Boolean  @default(true)
+
+  contacts    ClientContact[]
+  jobSites    JobSite[]
+  contracts   Contract[]
+  jobDemands  JobDemand[]
+  invoices    Invoice[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  @@index([agencyId])
+  @@index([country])
+  @@map("clients")
+}
+
+// ========== 56. client_contacts ==========
+
+model ClientContact {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  fullName  String
+  email     String?
+  phone     String?
+  position  String? // HR Manager, Project Manager
+  isPrimary Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId])
+  @@map("client_contacts")
+}
+
+// ========== 57. job_sites (project sites) ==========
+
+model JobSite {
+  id          String   @id @default(cuid())
+  agencyId    String
+  agency      Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  name        String // e.g., NEOM Site A
+  code        String?  @unique
+  address     String?  @db.Text
+  city        String?
+  country     String?
+  latitude    Decimal? @db.Decimal(10, 8)
+  longitude   Decimal? @db.Decimal(11, 8)
+  geofenceRadiusM Int? @default(100)
+
+  isActive    Boolean  @default(true)
+
+  demands     JobDemand[]
+  deployments WorkerDeployment[]
+  timesheets  Timesheet[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@map("job_sites")
+}
+
+// ========== 58. contracts ==========
+
+model Contract {
+  id            String         @id @default(cuid())
+  agencyId      String
+  agency        Agency         @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  clientId      String
+  client        Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  contractNumber String        @unique
+  title         String
+  description   String?        @db.Text
+  startDate     DateTime
+  endDate       DateTime
+  status        ContractStatus @default(draft)
+  totalValue    Decimal?       @db.Decimal(12, 2)
+  currency      String         @default("USD")
+
+  demands       JobDemand[]
+  deployments   WorkerDeployment[]
+  invoices      Invoice[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@index([status])
+  @@map("contracts")
+}
+
+// ========== 59. job_demands ==========
+
+model JobDemand {
+  id              String   @id @default(cuid())
+  agencyId        String
+  agency          Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  clientId        String
+  client          Client   @relation(fields: [clientId], references: [id])
+  jobSiteId       String
+  jobSite         JobSite  @relation(fields: [jobSiteId], references: [id], onDelete: Cascade)
+  contractId      String?
+  contract        Contract? @relation(fields: [contractId], references: [id])
+
+  title           String // e.g., 50 Welders for NEOM
+  skillId         String? // Required skill
+  quantity        Int // e.g., 50 workers
+  filledQuantity  Int      @default(0) // How many filled
+
+  billingRate     Decimal  @db.Decimal(10, 2) // $/hr client pays
+  payRate         Decimal  @db.Decimal(10, 2) // $/hr worker gets
+  profitMargin    Decimal? @db.Decimal(10, 2) // Auto-calculated (billing - pay)
+
+  requiredGrade   SkillGrade?
+  experienceMin   Int? // Min years
+  startDate       DateTime?
+  endDate         DateTime?
+  isUrgent        Boolean  @default(false)
+  status          String   @default("open") // open, fulfilled, cancelled
+
+  deployments     WorkerDeployment[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([agencyId])
+  @@index([jobSiteId])
+  @@index([status])
+  @@map("job_demands")
+}
+
+// ========== 60. worker_deployments ==========
+
+model WorkerDeployment {
+  id          String           @id @default(cuid())
+  agencyId    String
+  agency      Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  workerId    String
+  worker      Worker           @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  jobSiteId   String
+  jobSite     JobSite          @relation(fields: [jobSiteId], references: [id])
+  demandId    String?
+  demand      JobDemand?       @relation(fields: [demandId], references: [id])
+  contractId  String?
+  contract    Contract?        @relation(fields: [contractId], references: [id])
+
+  startDate   DateTime
+  endDate     DateTime?
+  status      DeploymentStatus @default(pending)
+  billingRate Decimal          @db.Decimal(10, 2)
+  payRate     Decimal          @db.Decimal(10, 2)
+
+  transferredFromId String? // Previous site if transferred (drag-and-drop)
+  notes       String?          @db.Text
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([agencyId])
+  @@index([workerId])
+  @@index([jobSiteId])
+  @@index([status])
+  @@map("worker_deployments")
+}
+
+// ========== 61. shift_schedules ==========
+
+model ShiftSchedule {
+  id          String   @id @default(cuid())
+  agencyId    String
+  agency      Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  name        String // Morning, Evening, Night
+  code        String?  @unique
+  startTime   String // "08:00"
+  endTime     String // "16:00"
+  breakMinutes Int     @default(60)
+  isNightShift Boolean @default(false)
+  nightAllowance Decimal? @db.Decimal(10, 2)
+  hazardPay   Decimal? @db.Decimal(10, 2)
+
+  isActive    Boolean  @default(true)
+
+  timesheetEntries TimesheetEntry[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([agencyId])
+  @@map("shift_schedules")
+}
+
+// ========== 62. timesheets ==========
+
+model Timesheet {
+  id            String          @id @default(cuid())
+  agencyId      String
+  agency        Agency          @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  jobSiteId     String
+  jobSite       JobSite         @relation(fields: [jobSiteId], references: [id])
+
+  weekStartDate DateTime        @db.Date
+  weekEndDate   DateTime        @db.Date
+  status        TimesheetStatus @default(draft)
+  isLocked      Boolean         @default(false) // Step: Timesheet Lock after approval
+  lockedAt      DateTime?
+  lockedBy      String?
+
+  approvedBy    String? // Client user id
+  approvedAt    DateTime?
+  digitalSignature String?      @db.Text // Client signature
+
+  entries       TimesheetEntry[]
+  overtimes     Overtime[]
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@index([agencyId])
+  @@index([jobSiteId])
+  @@index([status])
+  @@map("timesheets")
+}
+
+// ========== 63. timesheet_entries ==========
+
+model TimesheetEntry {
+  id          String   @id @default(cuid())
+
+  timesheetId String
+  timesheet   Timesheet @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+  workerId    String
+  worker      Worker   @relation(fields: [workerId], references: [id])
+
+  date        DateTime @db.Date
+  shiftId     String?
+  shift       ShiftSchedule? @relation(fields: [shiftId], references: [id])
+
+  regularHours Decimal  @default(0) @db.Decimal(5, 2) // e.g., 8.00
+  overtimeHours Decimal @default(0) @db.Decimal(5, 2)
+  nightHours   Decimal  @default(0) @db.Decimal(5, 2)
+
+  gpsLatitude  Decimal? @db.Decimal(10, 8) // Geofencing
+  gpsLongitude Decimal? @db.Decimal(11, 8)
+  isGeofenced  Boolean  @default(false)
+
+  // Calculated
+  totalHours   Decimal  @db.Decimal(5, 2) // regular + OT
+  billingAmount Decimal? @db.Decimal(10, 2)
+  payAmount     Decimal? @db.Decimal(10, 2)
+
+  notes        String?  @db.Text
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([timesheetId])
+  @@index([workerId])
+  @@index([date])
+  @@map("timesheet_entries")
+}
+
+// ========== 64. overtimes ==========
+
+model Overtime {
+  id          String   @id @default(cuid())
+  timesheetId String
+  timesheet   Timesheet @relation(fields: [timesheetId], references: [id], onDelete: Cascade)
+
+  workerId    String
+  hours       Decimal  @db.Decimal(5, 2)
+  multiplier  Decimal  @default(1.5) @db.Decimal(3, 2) // 1.5x, 2.0x
+  rate        Decimal  @db.Decimal(10, 2) // $/hr for OT
+  amount      Decimal  @db.Decimal(10, 2) // hours * rate * multiplier
+  reason      String?  @db.Text
+  isNight     Boolean  @default(false)
+  isHazard    Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([timesheetId])
+  @@map("overtimes")
+}
+
+// ========== 65. payrolls ==========
+
+model Payroll {
+  id          String        @id @default(cuid())
+  agencyId    String
+  agency      Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+
+  payrollNumber String      @unique // e.g., PAY-2026-08-001
+  periodStart DateTime      @db.Date
+  periodEnd   DateTime      @db.Date
+  status      PayrollStatus @default(draft)
+
+  totalGross  Decimal       @db.Decimal(12, 2) // Sum of all details gross
+  totalDeductions Decimal   @db.Decimal(12, 2) @default(0)
+  totalNet    Decimal       @db.Decimal(12, 2) // gross - deductions
+
+  approvedBy  String?
+  approvedAt  DateTime?
+  paidAt      DateTime?
+  paymentFileUrl String? // Bank CSV export
+
+  details     PayrollDetail[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([agencyId])
+  @@index([status])
+  @@map("payrolls")
+}
+
+// ========== 66. payroll_details ==========
+
+model PayrollDetail {
+  id          String   @id @default(cuid())
+  payrollId   String
+  payroll     Payroll  @relation(fields: [payrollId], references: [id], onDelete: Cascade)
+  workerId    String
+  worker      Worker   @relation(fields: [workerId], references: [id])
+
+  regularHours Decimal @db.Decimal(5, 2)
+  overtimeHours Decimal @db.Decimal(5, 2)
+  totalHours   Decimal @db.Decimal(5, 2)
+
+  grossAmount  Decimal @db.Decimal(10, 2) // Before deductions
+  deductions   Decimal @db.Decimal(10, 2) @default(0) // Loan, advance
+  advanceCut   Decimal @db.Decimal(10, 2) @default(0)
+  netAmount    Decimal @db.Decimal(10, 2) // Final pay
+
+  payRate      Decimal @db.Decimal(10, 2)
+  otAmount     Decimal @db.Decimal(10, 2) @default(0)
+
+  payslipUrl   String? // PDF pay-slip
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([payrollId])
+  @@index([workerId])
+  @@map("payroll_details")
+}
+
+// ========== 67. invoices ==========
+
+model Invoice {
+  id            String        @id @default(cuid())
+  agencyId      String
+  agency        Agency        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  clientId      String
+  client        Client        @relation(fields: [clientId], references: [id])
+  contractId    String?
+  contract      Contract?     @relation(fields: [contractId], references: [id])
+
+  invoiceNumber String        @unique // e.g., INV-2026-08-001
+  issueDate     DateTime      @db.Date
+  dueDate       DateTime      @db.Date
+  status        InvoiceStatus @default(draft)
+
+  subtotal      Decimal       @db.Decimal(12, 2)
+  taxAmount     Decimal       @db.Decimal(12, 2) @default(0)
+  discount      Decimal       @db.Decimal(12, 2) @default(0)
+  totalAmount   Decimal       @db.Decimal(12, 2)
+  currency      String        @default("USD")
+  exchangeRate  Decimal?      @db.Decimal(10, 4) // For multi-currency
+
+  pdfUrl        String? // Branded PDF
+  paymentUrl    String? // Stripe/PayPal link
+  paidAt        DateTime?
+  paidAmount    Decimal?      @db.Decimal(12, 2)
+
+  items         InvoiceItem[]
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([agencyId])
+  @@index([clientId])
+  @@index([status])
+  @@map("invoices")
+}
+
+// ========== 68. invoice_items ==========
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  description String   @db.Text // e.g., "Welder - 120 hrs"
+  quantity    Decimal  @db.Decimal(10, 2) // Hours
+  unitPrice   Decimal  @db.Decimal(10, 2) // Billing rate $/hr
+  amount      Decimal  @db.Decimal(12, 2) // quantity * unitPrice
+  workerId    String? // Link to worker if needed
+  timesheetId String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+// ========== 69. audit_logs ==========
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  agencyId    String?     // null for super_admin global logs
+  agency      Agency?     @relation(fields: [agencyId], references: [id])
+
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id])
+  username    String // Denormalized for fast query
+  action      AuditAction
+  resource    String // e.g., "workers", "invoices"
+  resourceId  String?
+  details     Json?       // Changed data
+  ipAddress   String?
+  userAgent   String?
+  timestamp   DateTime    @default(now())
+
+  @@index([agencyId])
+  @@index([username])
+  @@index([action])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
+
+// ========== 70. system_notifications ==========
+
+model SystemNotification {
+  id          String           @id @default(cuid())
+  agencyId    String?          // null for global (CEO broadcast)
+  agency      Agency?          @relation(fields: [agencyId], references: [id])
+
+  userId      String?          // null for broadcast
+  title       String
+  message     String           @db.Text
+  type        NotificationType @default(info)
+  isRead      Boolean          @default(false)
+  isBroadcast Boolean          @default(false)
+  broadcastTarget String?      // all, agency_admins, etc.
+  priority    String           @default("normal")
+  actionUrl   String?
+  expiresAt   DateTime?
+
+  createdAt   DateTime         @default(now())
+  readAt      DateTime?
+
+  @@index([agencyId])
+  @@index([isRead])
+  @@index([type])
+  @@map("system_notifications")
+}
