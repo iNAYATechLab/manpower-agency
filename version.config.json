@@ -2,16 +2,16 @@
   "system": "International Version Control System (IVCS)",
   "standard": "Semantic Versioning 2.0.0 - https://semver.org/",
   "format": "vMAJOR.MINOR.PATCH+BUILD",
-  "current": "v2.0.0",
-  "phase": "Phase 11 (Steps 231-250)",
-  "build": "20260807-4d4ed55",
+  "current": "v2.1.0",
+  "phase": "Phase 12 (Steps 251-270)",
+  "build": "20260807-1bfa000",
   "description": "iNAYATechLab Manpower SaaS - IVCS: International, Auditable, Phase-Mapped Versioning",
   "rules": {
     "major": "Breaking architecture change (1=Foundation 1-5, 2=Core Features 6-10, 3=Advanced 11-15)",
     "minor": "Phase completion - each phase (20 steps) increments MINOR (1.0.0 -> 1.1.0 -> ... -> 3.0.0)",
     "patch": "Hotfix / single step fix within phase (1.0.0 -> 1.0.1)",
     "build": "YYYYMMDD-shortHash (e.g., 20260807-736b6e7) for international traceability",
-    "tag": "v prefix mandatory (v2.0.0), annotated tag with message",
+    "tag": "v prefix mandatory (v2.1.0), annotated tag with message",
     "branch": "main (stable), develop (next), gift/* (delivery)"
   },
   "history": [
@@ -89,14 +89,21 @@
       "version": "v2.0.0",
       "phase": "Phase 11 (Steps 231-250)",
       "date": "2026-08-07",
-      "commit": "pending",
+      "commit": "1bfa000",
       "changes": "Compliance, Document & Cloud Notification: Passport uploader (231), akama processor (232), compliance tracker (233), passport alert (234), work permit alert (235), cron scheduler 30/60d (236), medical catalog (237), insurance catalog (238), BMET tracking (239), SOS messaging (240), real-time Pusher/Firebase (241), Resend/SendGrid (242), Twilio SMS (243), notification center (244), email preferences (245), read/unread toggle (246), queue processor (247), retry service (248), download permission checker (249), watermarked preview viewer (250)"
+    },
+    {
+      "version": "v2.1.0",
+      "phase": "Phase 12 (Steps 251-270)",
+      "date": "2026-08-07",
+      "commit": "pending",
+      "changes": "Analytics, Logger & Export Engine: Profitability chart (251), revenue vs payout (252), utilization donut (253), country map (254), skill distribution (255), overdue chart (256), custom chart binder (257), XLSX exporter (258), CSV exporter (259), PDF report (260), Zod validation (261), form error processor (262), audit log table UI (263), diff viewer (264), IP tracking visual (265), error tracking (266), performance logger (267), report filter (268), weekly summary email (269), client performance report (270)"
     }
   ],
   "next": {
-    "version": "v2.1.0",
-    "phase": "Phase 12 (Steps 251-280)",
-    "planned": "Analytics & Security"
+    "version": "v2.2.0",
+    "phase": "Phase 13 (Steps 271-285)",
+    "planned": "Final Polish & Testing"
   },
   "international": {
     "locales": [

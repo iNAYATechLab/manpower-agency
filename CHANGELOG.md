@@ -3,48 +3,53 @@ All notable changes to `manpower-agency-saas` follow **International Version Con
 
 Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/BN
 
-## [v2.0.0] - 2026-08-07
-### Phase 11 (Steps 231-250) - Compliance, Document & Cloud Notification
-**Build:** `20260807-4d4ed55` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 231-250 (20 steps)
+## [v2.1.0] - 2026-08-07
+### Phase 12 (Steps 251-270) - Analytics, Logger & Export Engine
+**Build:** `20260807-1bfa000` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 251-270 (20 steps)
 
 #### Added
-- **231:** Passport File Uploader & Validator (`lib/compliance/passport.ts` - PDF/JPG/PNG, 10MB, filename check)
-- **232:** Akama / Work Permit File Processor (`lib/compliance/akama.ts` - daysUntilExpiry)
-- **233:** Smart Compliance Date Tracker Algorithm (`lib/compliance/tracker.ts` - valid/expiring_soon/critical/expired)
-- **234:** Passport Expiry Automated Alert Service (`lib/compliance/alerts.ts` - passport alert)
-- **235:** Work Permit Expiry Automated Alert (work permit alert)
-- **236:** 30 and 60 Days Cron-Job Scheduler (`lib/compliance/cron.ts` - daily 02:00/03:00 UTC)
-- **237:** Medical Report Digital Catalog (`lib/compliance/medical.ts` - fit/unfit/pending, expiry)
-- **238:** Insurance Policy Document Catalog (`lib/compliance/insurance.ts` - policyNumber, coverage)
-- **239:** BMET & Immigration Permit Tracking Module (`lib/compliance/bmet.ts` - pending/approved)
-- **240:** Emergency SOS Messaging Backend (`lib/compliance/sos.ts` - active/acknowledged, triggerSOS)
-- **241:** Pusher/Firebase Real-time Notification System (`lib/notifications/realtime.ts` - subscribe/publish)
-- **242:** Resend/SendGrid Email Dispatcher (`lib/notifications/email-dispatcher.ts` - sendEmail)
-- **243:** Twilio/SMS Gateway API Link (`lib/notifications/sms-gateway.ts` - sendSMS)
-- **244:** System Notification Center Page (`app/agency/notifications/page.tsx` - list, toggle, queue)
-- **245:** User's Email Preference Option (`lib/notifications/preferences.ts` - marketing, complianceAlerts etc.)
-- **246:** Notification Read/Unread Status Toggle (`lib/notifications/read-status.ts` - toggleReadStatus)
-- **247:** Background Queue Processor (`lib/queue/processor.ts` - enqueue, processQueue, 4 job types)
-- **248:** Failed Email Retry Backend Service (`lib/queue/retry.ts` - retryFailedJobs)
-- **249:** Document Download Permission Checker (`lib/storage/permission-checker.ts` - CEO bypass, agency, worker)
-- **250:** Watermarked Document Preview Viewer UI (`components/compliance/watermarked-viewer.tsx` - diagonal confidential, preview)
+- **251:** Project Profitability Dashboard Chart (`components/analytics/profitability-chart.tsx` - 3 projects, bars)
+- **252:** Revenue vs Payout Chart Visualization (`revenue-payout-chart.tsx` - 4 months, dual bars)
+- **253:** Worker Utilization Rate Donut Chart (`utilization-donut.tsx` - Active 87 vs Idle 37, conic-gradient)
+- **254:** Country-wise Worker Distribution Map UI (`country-map.tsx` - SA 87, QA 42, AE 15, circles)
+- **255:** Skill Category-wise Manpower Distribution Chart (`skill-distribution.tsx` - 4 skills, bars)
+- **256:** Invoice Overdue Receivable Chart (`overdue-chart.tsx` - Paid 85k, Overdue 12.4k, Pending 42k)
+- **257:** React Custom Chart Component Binder (`lib/analytics/charts.ts` - 6 data generators)
+- **258:** All-Data Excel (XLSX) Exporter Engine (`lib/export/xlsx.ts` - generateXLSXData, downloadXLSX)
+- **259:** All-Data CSV Exporter (`lib/export/csv.ts` - generateCSV, downloadCSV)
+- **260:** PDF Report Printer Engine Setup (`lib/export/pdf.ts` - generatePDFReport HTML, printPDFReport)
+- **261:** Zod Schema Input Validation (`lib/validation/zod-schemas.ts` - validateWorkerOnboarding, Client, Timesheet)
+- **262:** Frontend Form Error Processor (`lib/validation/form-errors.ts` - processFormErrors, hasErrors)
+- **263:** Audit Log Table UI (`components/analytics/audit-log-table.tsx` - 10 logs, time, user, action)
+- **264:** Data Modification History Diff Viewer (`diff-viewer.tsx` - old vs new, yellow highlight)
+- **265:** User IP & Device Tracking Visual (`ip-tracking.tsx` - login history, success/fail)
+- **266:** System Error Tracking & Logger (`lib/logger/error-tracking.ts` - trackError, count)
+- **267:** Performance Metrics Logger (`lib/logger/performance.ts` - logPerformance, avg)
+- **268:** Custom Representative Report Filter (`components/analytics/report-filter.tsx` - agency, date, status)
+- **269:** Auto-Generated Weekly Summary Email (`lib/email/weekly-summary.ts` - subject + HTML table)
+- **270:** Client Performance Report Generator (`lib/reports/client-performance.ts` - 2 mock reports, avgRating, onTimeRate)
 
 #### Routes
-- `/agency/compliance` — Compliance Overview (231-240, 250) + Watermarked Viewer
-- `/agency/notifications` — Notification Center (241-248, 244) + Preferences + Queue
+- `/agency/analytics` — Full Analytics Dashboard (251-270) + Export (258-260) + Validation (261-262) + Audit (263-265) + Logger (266-267) + Reports (268-270)
 
 #### Verified
-- `npm run build` ✓ 28 routes (2 new compliance/notification + 26 previous + middleware 28.7 kB)
+- `npm run build` ✓ 29 routes (1 analytics + 28 previous + middleware 28.7 kB)
 - Gift: https://github.com/iNAYATechLab/manpower-agency
+
+---
+
+## [v2.0.0] - 2026-08-07
+### Phase 11 (Steps 231-250) - Compliance, Document & Cloud Notification
+**Build:** `20260807-1bfa000` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 231-250 (20 steps)
+
+#### Added
+- **231-250:** Passport Uploader & Validator, Akama Processor, Compliance Tracker, Passport/Work Permit Alerts, Cron 30/60d, Medical Catalog, Insurance Catalog, BMET Tracking, SOS Messaging, Real-time Pusher/Firebase, Resend/SendGrid, Twilio SMS, Notification Center, Email Preferences, Read/Unread Toggle, Queue Processor, Retry Service, Download Permission Checker, Watermarked Preview Viewer
 
 ---
 
 ## [v1.9.0] - 2026-08-07
 ### Phase 10 (Steps 211-230) - Payroll & Client Invoicing
 **Build:** `20260807-4d4ed55` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 211-230 (20 steps)
-
-#### Added
-- **211-230:** Auto Payroll Engine, Basic Salary, OT Calc, Advance Deduction, Net Payable, Bulk Payroll, PDF Pay-slip, Template, Bank CSV, Worker Portal, Invoice Engine, Billing Hours×Rate, VAT, Service Charge, Multi-Currency, Exchange API, Branded PDF, Auto-Email, Status Tracker, Stripe/PayPal
 
 ---
 
@@ -103,8 +108,8 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ---
 
 ## Unreleased
-### [v2.1.0] - Phase 12 (Steps 251-280) - Planned
-- Advanced Analytics & Profitability
+### [v2.2.0] - Phase 13 (Steps 271-285) - Planned
+- Final Polish, Testing & Deployment
 
 ---
 
