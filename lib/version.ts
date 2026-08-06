@@ -31,8 +31,14 @@ export type VersionWithBuild = `v${number}.${number}.${number}+${string}`;
  */
 export function parseVersion(version: string): { major: number; minor: number; patch: number; build?: string } {
   const cleaned = version.replace(/^v/, "");
-  const [ver, build] = cleaned.split("+");
-  const [major, minor, patch] = ver.split(".").map(Number);
+  const parts = cleaned.split("+");
+  const ver = parts[0] as string;
+  const build = parts[1];
+  if (!ver) throw new Error(`Invalid version: ${version}`);
+  const nums = ver.split(".").map(Number);
+  const major = nums[0] ?? 0;
+  const minor = nums[1] ?? 0;
+  const patch = nums[2] ?? 0;
   return { major, minor, patch, build };
 }
 
@@ -97,7 +103,8 @@ export function getVersionFromFile(): string {
  * Generate build metadata: YYYYMMDD-shortHash
  */
 export function generateBuildMetadata(commitHash?: string): string {
-  const date = new Date().toISOString().split("T")[0].replace(/-/g, "");
+  const datePart = new Date().toISOString().split("T")[0] ?? "20260807";
+  const date = datePart.replace(/-/g, "");
   const hash = commitHash || "dev";
   return `${date}-${hash.substring(0, 7)}`;
 }
