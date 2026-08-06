@@ -3,41 +3,49 @@ All notable changes to `manpower-agency-saas` follow **International Version Con
 
 Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/BN
 
-## [v1.6.0] - 2026-08-07
-### Phase 7 (Steps 151-170) - Worker Onboarding & Skill Directory
-**Build:** `20260807-53974f9` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 151-170 (20 steps)
+## [v1.7.0] - 2026-08-07
+### Phase 8 (Steps 171-190) - Client & Contact Management
+**Build:** `20260807-c6ee6bb` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 171-190 (20 steps)
 
 #### Added
-- **151:** Multi-step Form (`app/agency/workers/onboarding/page.tsx` - 10 steps, progress bar, state)
-- **152:** Personal Information Input (`components/workers/onboarding/personal-info.tsx` - 6 fields, EN/BN)
-- **153:** Passport Info & Expiry Entry (`passport-form.tsx` - 6 fields, visa)
-- **154:** Health & Medical Fitness Input (`medical-form.tsx` - status, expiry, blood group)
-- **155:** Skill Catalog Selector (`skill-selector.tsx` - 5 skills, checkbox, category)
-- **156:** Professional Grading Dropdown (`grade-dropdown.tsx` - Grade A/B/C)
-- **157:** Language & Experience UI (`language-experience.tsx` - 5 langs, years)
-- **158:** Bank Account & Payment Details (`bank-details.tsx` - bank, IBAN, SWIFT)
-- **159:** Emergency Contact Form (`emergency-contact.tsx` - name, relation, phone, address)
-- **160:** Photo Upload & Cropping UI (`photo-upload.tsx` - preview, file input, remove)
-- **161:** Digitized Skill Certificate Uploader (`certificate-upload.tsx` - title, file, list)
-- **162:** All-Workers Data Table (`components/workers/data-table.tsx` - 5 workers, 6 columns)
-- **163:** Column Customization & Sorting (`data-table.tsx` - visibleCols, sort header)
-- **164:** Skill Filter Dropdown (`filter-dropdown.tsx` - Welder, Electrician etc.)
-- **165:** Location/Project Filter (`filter-dropdown.tsx` - Bench, NEOM Site A)
-- **166:** Print & PDF Download (`print-pdf.tsx` - window.print + /api/workers/[id]/pdf)
-- **167:** Worker Profile Details View (`app/agency/workers/[id]/page.tsx` - avatar, passport, bank, docs)
-- **168:** Performance Rating History Tab (`performance-history.tsx` - 3 reviews, ★ rating)
-- **169:** Complaint Form (`complaint-form.tsx` - reason, details, submit)
-- **170:** Blacklist/Deactivate Button (`blacklist-button.tsx` - reason, toggle, red theme)
-
+- **171:** Foreign Client Company Onboarding Form (`app/agency/clients/onboarding/page.tsx` - multi-section)
+- **172:** Company Profile & Registered Name Input (`components/clients/onboarding/company-profile.tsx`)
+- **173:** Contact Person & Official Contact Form (`contact-form.tsx` - HR Manager)
+- **174:** Multiple Job Sites UI (`job-sites-form.tsx` - add/remove sites)
+- **175:** Site Location & GPS Coordinates (latitude/longitude for Geofencing)
+- **176:** Contract Agreement Uploader (PDF file)
+- **177:** Contract Start/End Calendar UI (date pickers)
+- **178:** Client Billing Rate Setup (`components/clients/billing-rates.tsx` - $/hr)
+- **179:** Worker Pay Rate Configuration ( $/hr)
+- **180:** Automated Profit Margin Counter (`calcProfitMargin` — `billing - pay` auto)
+- **181:** Job Demand Quota Onboarding (`job-demand-form.tsx` - quantity, progress bar)
+- **182:** Real-time Progress Bar (filled/quantity %, Fill +1 button)
+- **183:** Drag-and-Drop Deployment Assignment (`drag-drop-deployment.tsx` - bench ↔ site, checkbox simulated)
+- **184:** Bulk Worker Site Assignment (Bulk Assign All button)
+- **185:** Site Transfer & Release Process (Release ← button, transferFromId)
+- **186:** Client Company List Data Table (`components/clients/client-table.tsx` - 3 clients, Code, Country, Rating)
+- **187:** Client Details View (`app/agency/clients/[id]/page.tsx` - profile, contract, workers)
+- **188:** Client-wise Active Workers Tab (Deployed workers table)
+- **189:** Contract Expiry Alert Card (`contract-expiry-card.tsx` - <90 days, high/medium urgency)
+- **190:** Client Feedback & Rating System (`feedback-system.tsx` - 5★, comment, submit)
 
 #### Routes
-- `/agency/workers` — All Workers Table + Filters
-- `/agency/workers/onboarding` — 10-step Multi-step Onboarding
-- `/agency/workers/[id]` — Profile Details + Performance + Complaint + Blacklist
+- `/agency/clients` — Client List + Expiry Alerts
+- `/agency/clients/onboarding` — Foreign Client Onboarding (Company, Contacts, Sites, Contract, Billing/Pay, Demand, Deployment)
+- `/agency/clients/[id]` — Client Details + Active Workers + Feedback
 
 #### Verified
-- `npm run build` ✓ 19 routes (3 worker routes + 17 previous + middleware 28.6 kB)
+- `npm run build` ✓ 21 routes (3 client routes + 19 previous + middleware)
 - Gift: https://github.com/iNAYATechLab/manpower-agency
+
+---
+
+## [v1.6.0] - 2026-08-07
+### Phase 7 (Steps 151-170) - Worker Onboarding & Skill Directory
+**Build:** `20260807-c6ee6bb` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 151-170 (20 steps)
+
+#### Added
+- **151-170:** Multi-step Form (10 steps), Personal, Passport, Medical, Skill Catalog, Grade A/B/C, Language, Bank, Emergency, Photo, Certificate, Data Table, Column Sort, Filters, Print/PDF, Profile View, Performance History, Complaint, Blacklist
 
 ---
 
@@ -45,26 +53,17 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ### Phase 6 (Steps 131-150) - Main Dashboard & Navigation UI
 **Build:** `20260807-53974f9` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 131-150 (20 steps)
 
-#### Added
-- **131-150:** Global Sidebar, Dynamic Nav (16 items), Mobile Drawer, Header Dropdown, Notification Bell, Super Admin Overview, Agency Health Card, Agency Dashboard, 6 Metric Cards, Client Dashboard, Supervisor Mobile, Worker Personal, Search, Breadcrumb, Skeleton
-
 ---
 
 ## [v1.4.0] - 2026-08-07
 ### Phase 5 (Steps 101-130) - Authentication & 2FA Security
 **Build:** `20260807-7681c7e` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 101-130 (30 steps)
 
-#### Added
-- **101-130:** JWT Session, Sign-In/Sign-Up/Refresh/Reset APIs, Bcrypt scrypt, RBAC, 5 Guards, 2FA QR/TOTP, SMS OTP, Lockout, Session Timeout, Device Block, IP Block, Brute-Force, Login Tracking, Secure Cookies, CSRF, CORS, Rate Limiter, Verification, OAuth, Guest Block, Audit Logger + Central Middleware
-
 ---
 
 ## [v1.3.0] - 2026-08-07
 ### Phase 4 (Steps 71-100) - Security, RLS & Data Isolation
 **Build:** `20260807-736b6e7` | **Author:** iNAYATechLab Inc. (Samiullah Pk) | **Steps:** 71-100 (30 steps)
-
-#### Added
-- **71-100:** RLS Activate (17 tables), 12 Policies, Indexes, Migration, Seed, Performance, Storage Buckets, Encryption, Watermark, Signed URL, Backup Tune
 
 ---
 
@@ -87,8 +86,8 @@ Format: `vMAJOR.MINOR.PATCH+BUILD` | Date: ISO 8601 (YYYY-MM-DD) | Language: EN/
 ---
 
 ## Unreleased
-### [v1.7.0] - Phase 8 (Steps 171-200) - Planned
-- Client, Project & Contract Tracking + Deployment
+### [v1.8.0] - Phase 9 (Steps 191-210) - Planned
+- Timesheet, Overtime & Geofencing
 
 ---
 
